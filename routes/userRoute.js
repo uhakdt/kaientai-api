@@ -77,23 +77,38 @@ router.get('/api/v1/user/ext', async (req, res) => {
 // CREATE USER
 router.post('/api/v1/user', async (req, res) => {
   try {
-    const result = await db.query(
-      'INSERT INTO public."User"(name, email, phone, "loginDetailID", "addressID", "dateAndTimeSignUp", "profileImageUrl", "extUserID") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *', [
-      req.body.name,
-      req.body.email,
-      req.body.phone,
-      req.body.loginDetailID,
-      req.body.addressID,
-      req.body.dateAndTimeSignUp,
-      req.body.profileImageUrl,
-      req.body.extUserID,
+    const existingUser = await db.query(
+      'SELECT * FROM public."User" WHERE email = $1;', [
+      req.body.email
     ])
-    res.status(201).json({
-      status: "OK",
-      data: {
-        user: result.rows[0]
-      }
-    })
+    console.log(existingUser);
+    if(existingUser.rowCount === 0){
+      const result = await db.query(
+        'INSERT INTO public."User"(name, email, phone, "loginDetailID", "addressID", "dateAndTimeSignUp", "profileImageUrl", "extUserID") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *', [
+        req.body.name,
+        req.body.email,
+        req.body.phone,
+        req.body.loginDetailID,
+        req.body.addressID,
+        req.body.dateAndTimeSignUp,
+        req.body.profileImageUrl,
+        req.body.extUserID,
+      ])
+      res.status(201).json({
+        status: "OK",
+        data: {
+          user: result.rows[0]
+        }
+      })
+    } else {
+      res.status(422).json({
+        status: "User already exists."
+      })
+      console.log("User already exists.")
+      res.status()
+    }
+
+
   } catch (error) {
     console.log(error);
   }
