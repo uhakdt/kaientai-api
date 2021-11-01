@@ -4,6 +4,27 @@ const request = require('request');
 
 const router = express.Router();
 
+let currentURL = process.env.URL_DEV;
+
+const reqOptCreateOrderProduct = {
+  url: `${currentURL}/api/v1/orderProduct`,
+  method: 'POST',
+  json: {
+    "orderID": null,
+    "title": null,
+    "quantity": null
+  }
+}
+
+const reqOptDeleteOrderProducts = {
+  url: `${currentURL}/api/v1/orderProducts/`,
+  method: 'DELETE'
+}
+
+const reqOptDeleteCartProducts = {
+  url: `${currentURL}/api/v1/cartProducts/`,
+  method: 'DELETE'
+}
 
 // GET ORDERS
 router.get('/api/v1/orders', async (req, res) => {
@@ -122,12 +143,44 @@ router.post('/api/v1/order', async (req, res) => {
       req.body.offerID,
       req.body.extOrderID
     ])
-    res.status(201).json({
-      status: "OK",
-      data: {
-        order: result.rows[0]
+    console.log("ORDER CREATED: ", resultCreateOrder.rows[0])
+
+    if(resultCreateOrder.rowCount > 0){
+      // Create Order Products from Cart Products
+      const createOrderProducts = async item => {
+        reqOptCreateOrderProduct.json.orderID = resultCreateOrder.rows[0].id;
+        reqOptCreateOrderProduct.json.title = item.title
+        reqOptCreateOrderProduct.json.quantity = item.quantity
+        request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
+          return resCreatOrderProduct.body.data
+        })
       }
-    })
+      const getCreateOrderProductsData = async () => {
+        return Promise.all(req.body.cartProducts.map(item => createOrderProducts(item)))
+      }
+      getCreateOrderProductsData().then(data => {
+        console.log(data);
+      }).catch(error => {
+        console.log()
+      })
+
+      // Delete Cart Products
+      const deleteCartProducts = async item => {
+        reqOptDeleteCartProducts.url = reqOptDeleteCartProducts.url + req.body.userID;
+        request(reqOptDeleteCartProducts, (err, resDeleteCartProducts, body) => {
+          return resDeleteCartProducts.body.data
+        })
+      }
+      deleteCartProducts(req.body.cartProducts[0]).then(data => {
+        console.log(data);
+      }).catch(error => {
+        console.log(error)
+      })
+
+      res.status(201).json({
+        status: "OK",
+      })
+    }
   } catch (error) {
     console.log(error);
   }
@@ -174,25 +227,43 @@ router.put('/api/v1/order', async (req, res) => {
 });
 
 // DELETE ORDER
-router.delete('/api/v1/order', async (req, res) => {
+router.delete('/api/v1/order/:id', async (req, res) => {
   try {
     const resultGET = await db.query(
       'SELECT * FROM public."Order" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
-    await db.query(
-      'DELETE FROM public."Order" WHERE id = $1',[
-      req.body.id
-    ])
-    if (resultGET.rows.length > 0) {
-      res.status(200).json({
-        status: "OK"
-      })
-    } else {
-      res.status(204).json({
-        status: "ID did not match."
-      })
-    }
+    reqOptDeleteOrderProducts.url = reqOptDeleteOrderProducts.url + resultGET.rows[0].id;
+
+    request(reqOptDeleteOrderProducts, (err, resDeleteOrderProducts, body) => {
+      console.log(err)
+      if(!err){
+        db.query(
+          'DELETE FROM public."Order" WHERE id = $1',[
+          req.params.id
+        ])
+        if (resultGET.rowCount > 0) {
+          res.status(200).json({
+            status: "OK",
+            data: {
+              order: resultGET.rows[0]
+            }
+          })
+        } else {
+          res.status(204).json({
+            status: "ID did not match."
+          })
+        }
+      } else {
+        res.status(500).json({
+          status: "Not sure what happened.",
+          data: {
+            order: resultGET.rows[0]
+          }
+        })
+      }
+    })
+
   } catch (error) {
     console.log(error)
   }
