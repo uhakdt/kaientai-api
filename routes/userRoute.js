@@ -49,8 +49,32 @@ router.get('/api/v1/user/:id', async (req, res) => {
   }
 });
 
-// CHECK EXTERNAL USER
-router.get('/api/v1/user/ext', async (req, res) => {
+// GET USER ID BY EMAIL
+router.post('/api/v1/user/:email', async (req, res) => {
+  try {
+    const result = await db.query(
+      'SELECT id FROM public."User" WHERE email = $1;', [
+      req.params.email
+    ])
+    if(result.rowCount > 0){
+      res.status(200).json({
+        status: "OK",
+        data: {
+          user: result.rows[0]
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "Email did not match.",
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+// GET USER BY EXTUSERID
+router.post('/api/v1/user/ext/:extUserID', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT * FROM public."User" WHERE "extUserID" = $1;', [
