@@ -15,10 +15,10 @@ app.use(require('./routes/klfRoute.js'));
 app.use(require('./routes/orderRoute.js'));
 app.use(require('./routes/orderProductRoute.js'));
 app.use(require('./routes/productRoute.js'));
-app.use(require('./routes/productVariantOptionRoute.js'));
 app.use(require('./routes/addressRoute.js'));
 app.use(require('./routes/userRoute.js'));
 app.use(require('./routes/postcodeRoute.js'));
 app.use(require('./routes/supplierRoute.js'));
+app.use(require('./routes/cartProductRoute.js'));
 
 module.exports = app;
