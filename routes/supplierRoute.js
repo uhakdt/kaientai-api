@@ -1,15 +1,14 @@
 const express = require('express');
-const db = require("../db");
+const db = require('../db');
 
 const router = express.Router();
-
 
 // GET SUPPLIERS
 router.get('/api/v1/suppliers', async (req, res) => {
   try {
     const results = await db.query(`SELECT * FROM public."Supplier";`)
 
-    if (results.rows.length > 0) {
+    if (results.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -33,7 +32,7 @@ router.get('/api/v1/supplier/:id', async (req, res) => {
       req.params.id
     ])
 
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -50,14 +49,14 @@ router.get('/api/v1/supplier/:id', async (req, res) => {
   }
 });
 
-// POST SUPPLIER EMAIL TO RETURN ID
-router.post('/api/v1/supplier/getIdByEmail', async (req, res) => {
+// GET SUPPLIER ID BY EMAIL
+router.post('/api/v1/supplier/:supplierEmail', async (req, res) => {
   try {
     const result = await db.query(`SELECT * FROM public."Supplier" WHERE "contactEmail"=$1;`, [
-      req.body.supplierEmail
+      req.params.supplierEmail
     ])
 
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -92,7 +91,7 @@ router.put('/api/v1/supplier', async (req, res) => {
       req.body.bankDetailID,
       req.body.registrationNumber,
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {

@@ -1,15 +1,14 @@
 const express = require('express');
-const db = require("../db");
+const db = require('../db');
 
 const router = express.Router();
-
 
 // GET POSTCODES
 router.get('/api/v1/postcodes', async (req, res) => {
   try {
     const results = await db.query(`SELECT * FROM public."Postcode";`)
 
-    if (results.rows.length > 0) {
+    if (results.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -27,13 +26,13 @@ router.get('/api/v1/postcodes', async (req, res) => {
 });
 
 // GET POSTCODE
-router.get('/api/v1/postcode', async (req, res) => {
+router.get('/api/v1/postcode/:id', async (req, res) => {
   try {
     const result = await db.query(`SELECT * FROM public."Postcode" WHERE id=$1;`, [
-      req.body.id
+      req.params.id
     ])
 
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -51,10 +50,10 @@ router.get('/api/v1/postcode', async (req, res) => {
 });
 
 // CHECK POSTCODE
-router.get('/api/v1/postcode/check', async (req, res) => {
+router.post('/api/v1/postcode/check', async (req, res) => {
   try {
     // Remove spaces
-    let customerPostcode = req.body.code;
+    let customerPostcode = req.body.postcode;
     customerPostcode = customerPostcode.replace(/\s+/g, '');
 
     // Take only 1st part of postcode and convert to Upper case
@@ -68,7 +67,7 @@ router.get('/api/v1/postcode/check', async (req, res) => {
           customerPostcode
         ])
       // Check if we cover this area
-      if(result.rowCount !== 0) {
+      if(result.rowCount > 0) {
         res.status(200).json({
           status: "OK",
           data: {
@@ -82,13 +81,19 @@ router.get('/api/v1/postcode/check', async (req, res) => {
         ])
         // HTTP Code 204: Empty Response
         res.status(204).json({
-          status: "We do not cover this Postcode area yet."
+          status: "We do not cover this Postcode area yet.",
+          data: {
+            postcode: customerPostcode
+          }
         })
       }
     } else {
       // HTTP Code 400: Wrong Input
       res.status(400).json({
-        status: "The Postcode doesn't match the UK postcode standards - please check and try again."
+        status: "The Postcode doesn't match the UK postcode standards - please check and try again.",
+        data: {
+          postcode: customerPostcode
+        }
       })
     }
   } catch (error) {
@@ -103,12 +108,19 @@ router.post('/api/v1/postcode', async (req, res) => {
       'INSERT INTO public."Postcode" (postcode) SELECT $1 WHERE NOT EXISTS (SELECT id FROM public."Postcode" WHERE postcode = $1) returning *', [
       req.body.postcode,
     ])
-    res.status(201).json({
-      status: "OK",
-      data: {
-        postcode: result.rows[0]
-      }
-    })
+
+    if(result.rowCount > 0){
+      res.status(201).json({
+        status: "OK",
+        data: {
+          postcode: result.rows[0]
+        }
+      })
+    } else {
+      res.status(500).json({
+        status: "Not sure what happened."
+      })
+    }
   } catch (error) {
     console.log(error);
   }
@@ -122,7 +134,7 @@ router.put('/api/v1/postcode', async (req, res) => {
       req.body.id,
       req.body.postcode
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -140,17 +152,17 @@ router.put('/api/v1/postcode', async (req, res) => {
 });
 
 // DELETE POSTCODE
-router.delete('/api/v1/postcode', async (req, res) => {
+router.delete('/api/v1/postcode/:id', async (req, res) => {
   try {
     const resultGET = await db.query(
       'SELECT * FROM public."Postcode" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
     await db.query(
       'DELETE FROM public."Postcode" WHERE id = $1',[
-      req.body.id
+      req.params.id
     ])
-    if (resultGET.rows.length > 0) {
+    if (resultGET.rowCount > 0) {
       res.status(200).json({
         status: "OK"
       })

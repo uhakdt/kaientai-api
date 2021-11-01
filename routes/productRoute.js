@@ -1,15 +1,14 @@
 const express = require('express');
-const db = require("../db");
+const db = require('../db');
 
 const router = express.Router();
-
 
 // GET PRODUCTS
 router.get('/api/v1/products', async (req, res) => {
   try {
     const results = await db.query(`SELECT * FROM public."Product" WHERE stock != 0 and active = true order by price asc;`)
     
-    if (results.rows.length > 0) {
+    if (results.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -27,12 +26,12 @@ router.get('/api/v1/products', async (req, res) => {
 });
 
 // GET PRODUCT
-router.get('/api/v1/product', async (req, res) => {
+router.get('/api/v1/product/:id', async (req, res) => {
   try {
     const result = await db.query(`SELECT * FROM public."Product" WHERE id=$1;`,[
-      req.body.id
+      req.params.id
     ])
-    if(result.rows.length > 0) {
+    if(result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -64,12 +63,18 @@ router.post('/api/v1/product', async (req, res) => {
       req.body.stock,
       req.body.active,
     ])
-    res.status(201).json({
-      status: "OK",
-      data: {
-        product: result.rows[0]
-      }
-    })
+    if(result.rowCount > 0){
+      res.status(201).json({
+        status: "OK",
+        data: {
+          product: result.rows[0]
+        }
+      })
+    } else {
+      res.status(500).json({
+        status: "Not sure what happened."
+      })
+    }
   } catch (error) {
     console.log(error);
   }
@@ -79,7 +84,7 @@ router.post('/api/v1/product', async (req, res) => {
 router.put('/api/v1/product', async (req, res) => {
   try {
     const result = await db.query(
-      'UPDATE public."ProductVariantOption" SET "supplierID"=$2, title=$3, description=$4, "imageUrl"=$5, "imagesUrl"=$6, "productRatingID"=$7, price=$8, stock=$9, active=$10 WHERE id=$1 returning *', [
+      'UPDATE public."Product" SET "supplierID"=$2, title=$3, description=$4, "imageUrl"=$5, "imagesUrl"=$6, "productRatingID"=$7, price=$8, stock=$9, active=$10 WHERE id=$1 returning *', [
       req.body.id,
       req.body.supplierID,
       req.body.title,
@@ -91,7 +96,7 @@ router.put('/api/v1/product', async (req, res) => {
       req.body.stock,
       req.body.active,
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -111,11 +116,11 @@ router.put('/api/v1/product', async (req, res) => {
 // UPDATE STOCK
 router.put('/api/v1/product/stock', async (req, res) => {
   try {
-    const result = await db.query('UPDATE public."Product" SET stock=$2 WHERE id=$1;', [
-      req.body.id,
-      req.body.stock
+    const result = await db.query('UPDATE public."Product" SET stock=$1 WHERE id=$2 returning *', [
+      req.body.stock,
+      req.body.id
     ])
-    if(result.rows.length > 0) {
+    if(result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -133,17 +138,17 @@ router.put('/api/v1/product/stock', async (req, res) => {
 });
 
 // DELETE PRODUCT
-router.delete('/api/v1/product', async (req, res) => {
+router.delete('/api/v1/product/:id', async (req, res) => {
   try {
     const resultGET = await db.query(
       'SELECT * FROM public."Product" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
     await db.query(
       'DELETE FROM public."Product" WHERE id = $1',[
-      req.body.id
+      req.params.id
     ])
-    if (resultGET.rows.length > 0) {
+    if (resultGET.rowCount > 0) {
       res.status(200).json({
         status: "OK"
       })

@@ -1,15 +1,14 @@
 const express = require('express');
-const db = require("../db");
+const db = require('../db');
 
 const router = express.Router();
-
 
 // GET USERS
 router.get('/api/v1/users', async (req, res) => {
   try {
     const results = await db.query(`SELECT * FROM public."User";`)
 
-    if(results.rows.length > 0){
+    if(results.rowCount > 0){
       res.status(200).json({
         status: "OK",
         data: {
@@ -27,13 +26,13 @@ router.get('/api/v1/users', async (req, res) => {
 });
 
 // GET USER
-router.get('/api/v1/user', async (req, res) => {
+router.get('/api/v1/user/:id', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT * FROM public."User" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
-    if(result.rows.length > 0){
+    if(result.rowCount > 0){
       res.status(200).json({
         status: "OK",
         data: {
@@ -55,9 +54,9 @@ router.get('/api/v1/user/ext', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT * FROM public."User" WHERE "extUserID" = $1;', [
-      req.body.id
+      req.params.extUserID
     ])
-    if(result.rowCount !== 0){
+    if(result.rowCount > 0){
       res.status(200).json({
         status: "OK",
         data: {
@@ -81,7 +80,7 @@ router.post('/api/v1/user', async (req, res) => {
       'SELECT * FROM public."User" WHERE email = $1;', [
       req.body.email
     ])
-    console.log(existingUser);
+
     if(existingUser.rowCount === 0){
       const result = await db.query(
         'INSERT INTO public."User"(name, email, phone, "loginDetailID", "addressID", "dateAndTimeSignUp", "profileImageUrl", "extUserID") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *', [
@@ -101,11 +100,16 @@ router.post('/api/v1/user', async (req, res) => {
         }
       })
     } else {
+      const result = await db.query(
+        'SELECT * FROM public."User" WHERE email = $1;', [
+        req.body.email
+      ])
       res.status(422).json({
-        status: "User already exists."
+        status: "User already exists.",
+        data: {
+          user: result.rows[0]
+        }
       })
-      console.log("User already exists.")
-      res.status()
     }
 
 
@@ -129,7 +133,7 @@ router.put('/api/v1/user', async (req, res) => {
       req.body.profileImageUrl,
       req.body.extUserID
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -147,19 +151,22 @@ router.put('/api/v1/user', async (req, res) => {
 });
 
 // DELETE USER
-router.delete('/api/v1/user', async (req, res) => {
+router.delete('/api/v1/user/:id', async (req, res) => {
   try {
     const resultGET = await db.query(
       'SELECT * FROM public."User" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
     await db.query(
       'DELETE FROM public."User" WHERE id = $1',[
-      req.body.id
+      req.params.id
     ])
     if (resultGET.rows.length > 0) {
       res.status(200).json({
-        status: "OK"
+        status: "OK",
+        data: {
+          user: resultGET.rows[0]
+        }
       })
     } else {
       res.status(204).json({

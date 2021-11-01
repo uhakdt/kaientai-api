@@ -1,15 +1,14 @@
 const express = require('express');
-const db = require("../db");
+const db = require('../db');
 
 const router = express.Router();
 
-
-// GET ADDRESS
+// GET ADDRESSES
 router.get('/api/v1/addresses', async (req, res) => {
   try {
     const results = await db.query(`SELECT * FROM public."Address";`)
 
-    if (results.rows.length > 0) {
+    if (results.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -27,14 +26,14 @@ router.get('/api/v1/addresses', async (req, res) => {
 });
 
 // GET ADDRESS
-router.get('/api/v1/address', async (req, res) => {
+router.get('/api/v1/address/:id', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT * FROM public."Address" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
     
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -63,12 +62,18 @@ router.post('/api/v1/address', async (req, res) => {
       req.body.country,
       req.body.postcode
     ])
-    res.status(201).json({
-      status: "OK",
-      data: {
-        address: result.rows[0]
-      }
-    })
+    if(result.rowCount > 0) {
+      res.status(201).json({
+        status: "OK",
+        data: {
+          address: result.rows[0]
+        }
+      })
+    } else {
+      res.status(500).json({
+        status: "Not sure what happened."
+      })
+    }
   } catch (error) {
     console.log(error);
   }
@@ -87,7 +92,7 @@ router.put('/api/v1/address', async (req, res) => {
       req.body.country,
       req.body.postcode
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -105,19 +110,22 @@ router.put('/api/v1/address', async (req, res) => {
 });
 
 // DELETE ADDRESS
-router.delete('/api/v1/address', async (req, res) => {
+router.delete('/api/v1/address/:id', async (req, res) => {
   try {
     const resultGET = await db.query(
       'SELECT * FROM public."Address" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
     await db.query(
       'DELETE FROM public."Address" WHERE id = $1',[
-      req.body.id
+      req.params.id
     ])
     if (resultGET.rows.length > 0) {
       res.status(200).json({
-        status: "OK"
+        status: "OK",
+        data: {
+          address: resultGET.rows[0]
+        }
       })
     } else {
       res.status(204).json({

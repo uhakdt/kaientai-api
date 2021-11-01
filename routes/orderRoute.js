@@ -1,5 +1,6 @@
 const express = require('express');
-const db = require("../db");
+const db = require('../db');
+const request = require('request');
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ router.get('/api/v1/orders', async (req, res) => {
   try {
     const results = await db.query(`SELECT * FROM public."Order";`)
 
-    if (results.rows.length > 0) {
+    if (results.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -33,7 +34,7 @@ router.get('/api/v1/orders/perSupplier/:supplierID', async (req, res) => {
       req.params.supplierID
     ])
 
-    if (results.rows.length > 0) {
+    if (results.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -51,13 +52,13 @@ router.get('/api/v1/orders/perSupplier/:supplierID', async (req, res) => {
 });
 
 // GET ORDER
-router.get('/api/v1/order', async (req, res) => {
+router.get('/api/v1/order/:id', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT * FROM public."Order" WHERE id = $1 ;', [
-      req.body.id
+      req.params.id
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -75,13 +76,13 @@ router.get('/api/v1/order', async (req, res) => {
 });
 
 // CHECK EXTERNAL ORDER EXISTS
-router.get('/api/v1/order/ext', async (req, res) => {
+router.get('/api/v1/order/ext/:id', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT * FROM public."Order" WHERE "extOrderID" = $1 ;', [
-      req.body.id
+      req.params.id
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -101,7 +102,8 @@ router.get('/api/v1/order/ext', async (req, res) => {
 // CREATE ORDER
 router.post('/api/v1/order', async (req, res) => {
   try {
-    const result = await db.query(
+    // Create Order
+    const resultCreateOrder = await db.query(
       'INSERT INTO public."Order"("dateAndTime", "statusID", "supplierID", "userID", "totalAmount", "contactName", "contactEmail", "contactPhone", address1, address2, city, county, country, postcode, "offerID", "extOrderID") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *', [
       req.body.dateAndTime,
       req.body.statusID,
@@ -118,7 +120,7 @@ router.post('/api/v1/order', async (req, res) => {
       req.body.country,
       req.body.postcode,
       req.body.offerID,
-      req.body.extOrderID,
+      req.body.extOrderID
     ])
     res.status(201).json({
       status: "OK",
@@ -154,7 +156,7 @@ router.put('/api/v1/order', async (req, res) => {
       req.body.offerID,
       req.body.extOrderID
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {

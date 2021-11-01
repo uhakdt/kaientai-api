@@ -1,18 +1,15 @@
-const e = require('express');
 const express = require('express');
-const request = require('request');
-const db = require("../db");
+const db = require('../db');
 
 const router = express.Router();
 
-
 // GET ORDER PRODUCTS
-router.get('/api/v1/orderProducts', async (req, res) => {
+router.get('/api/v1/orderProducts/:orderID', async (req, res) => {
   try {
     const results = await db.query(`SELECT * FROM public."OrderProduct" WHERE "orderID" = $1;`, [
-      req.body.orderID
+      req.params.orderID
     ])
-    if(results.rows.length > 0){
+    if(results.rowCount > 0){
       res.status(200).json({
         status: "OK",
         data: {
@@ -30,13 +27,13 @@ router.get('/api/v1/orderProducts', async (req, res) => {
 });
 
 // GET ORDER PRODUCT
-router.get('/api/v1/orderProduct', async (req, res) => {
+router.get('/api/v1/orderProduct/:id', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT * FROM public."OrderProduct" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {
@@ -57,17 +54,23 @@ router.get('/api/v1/orderProduct', async (req, res) => {
 router.post('/api/v1/orderProduct', async (req, res) => {
   try {
     const result = await db.query(
-      'INSERT INTO public."OrderProduct"("orderID", "productVariantOptionID", quantity) VALUES ($1, $2, $3) returning *', [
+      'INSERT INTO public."OrderProduct"("orderID", title, quantity) VALUES ($1, $2, $3) returning *', [
       req.body.orderID,
-      req.body.productVariantOptionID,
+      req.body.title,
       req.body.quantity,
     ])
-    res.status(201).json({
-      status: "OK",
-      data: {
-        orderProduct: result.rows[0]
-      }
-    })
+    if(result.rowCount > 0) {
+      res.status(201).json({
+        status: "OK",
+        data: {
+          orderProduct: result.rows[0]
+        }
+      })
+    } else {
+      res.status(500).json({
+        status: "Not sure what happened."
+      })
+    }
   } catch (error) {
     console.log(error);
   }
@@ -153,17 +156,17 @@ function NEEDSFIXINGUpdateOrderProductAndStock() {
 }
 
 // DELETE ORDER PRODUCT
-router.delete('/api/v1/orderProduct', async (req, res) => {
+router.delete('/api/v1/orderProduct/:id', async (req, res) => {
   try {
     const resultGET = await db.query(
       'SELECT * FROM public."OrderProduct" WHERE id = $1;', [
-      req.body.id
+      req.params.id
     ])
     await db.query(
       'DELETE FROM public."OrderProduct" WHERE id = $1',[
-      req.body.id
+      req.params.id
     ])
-    if (resultGET.rows.length > 0) {
+    if (resultGET.rowCount > 0) {
       res.status(200).json({
         status: "OK",
         data: {

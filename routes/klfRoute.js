@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require("../db");
+const db = require('../db');
 const request = require('request');
 const email = require('../auxillary/email');
 
