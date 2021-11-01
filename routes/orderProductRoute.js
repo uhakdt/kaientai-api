@@ -76,84 +76,62 @@ router.post('/api/v1/orderProduct', async (req, res) => {
   }
 });
 
-// NEEDS SORTING!!!
-function NEEDSFIXINGUpdateOrderProductAndStock() {
-  // UPDATE ORDERPRODUCT + STOCK
-  // router.put('/api/v1/orderProduct', async (req, res) => {
-  //   try {
-  //     let stockOld;
-  //     let stockNew;
-  //     let orderProductQuantityOld;
-  //     let orderProductQuantityNew = req.body.quantity;
-  //     const reqOptGetProductVariantOption = {
-  //       url: 'http://localhost:9973/api/v1/productVariantOption',
-  //       method: 'GET',
-  //       json: {
-  //         "id": req.body.productVariantOptionID
-  //       },
-  //     };
-  //     const reqOptGetOrderProduct = {
-  //       url: 'http://localhost:9973/api/v1/orderProduct',
-  //       method: 'GET',
-  //       json: {
-  //         "id": req.body.id
-  //       },
-  //     };
-  //     request(reqOptGetProductVariantOption, (err, res, body) => {
-  //       stockOld = res.body.data.productVariantOption.stock;
-  //     })
-  //     request(reqOptGetOrderProduct, (err, res, body) => {
-  //       orderProductQuantityOld = res.body.data.orderProduct.quantity;
-  //     })
+// UPDATE ORDER PRODUCT + STOCK + CHECK IF CAN BE DONE
+router.put('/api/v1/orderProduct/stock', async (req, res) => {
+  try {
+    // Old Product Stock + Old Order Product Stock
+    const oldProductStock = await db.query('SELECT stock FROM public."Product" WHERE title=$1', [
+      req.body.title
+    ])
+    const oldOrderProductStock = await db.query('SELECT quantity FROM public."OrderProduct" WHERE id=$1', [
+      req.body.id
+    ])
+
+    // Calculate => newProductStock = oldProductStock - (newOrderProductStock - newOrderProductStock)
+    const newProductStock = oldProductStock.rows[0].stock - (req.body.quantity - oldOrderProductStock.rows[0].quantity);
+    
+    // Check if there is enough stock if OrderProduct quantity new > old
+    if(newProductStock >= 0){
+      // Update quantity of Order Product
+      const newOrderProductResult = await db.query(
+        'UPDATE public."OrderProduct" SET quantity=$1 WHERE id=$2 returning *', [
+        req.body.quantity,
+        req.body.id
+      ])
+      // Update stock of Product
+      const newProductResult = await db.query('UPDATE public."Product" SET stock=$1 WHERE title=$2 returning *', [
+        newProductStock,
+        req.body.title
+      ])
   
-  //     const result = await db.query(
-  //       'UPDATE public."OrderProduct" SET "orderID"=$2, "productVariantOptionID"=$3, quantity=$4 WHERE id = $1 returning *',[
-  //       req.body.id,
-  //       req.body.orderID,
-  //       req.body.productVariantOptionID,
-  //       req.body.quantity,
-  //     ])
-  
-  //     const reqOptUpdateStock = {
-  //       url: 'http://localhost:9973/api/v1/productVariantOption/stock',
-  //       method: 'PUT',
-  //       json: {
-  //         "id": result.rows[0].productVariantOptionID,
-  //         "stock": stockNew
-  //       },
-  //     };
-  //     stockNew = stockOld + (orderProductQuantityOld - orderProductQuantityNew);
-  //     console.log("---------------------------------")
-  //     console.log("---------------------------------")
-  //     console.log(stockOld)
-  //     console.log("---------------------------------")
-  //     console.log(orderProductQuantityOld)
-  //     console.log("---------------------------------")
-  //     console.log(orderProductQuantityNew)
-  //     console.log("---------------------------------")
-  //     console.log("---------------------------------")
-  //     console.log(stockNew);
-  
-  //     // request(reqOptUpdateStock, (err, res, body) => {
-  //     //   console.log("UPDATING STOCK")
-  //     // })
-  //     if (result.rows.length > 0) {
-  //       res.status(200).json({
-  //         status: "OK",
-  //         data: {
-  //           orderProduct: result.rows[0]
-  //         }
-  //       })
-  //     } else {
-  //       res.status(204).json({
-  //         status: "ID did not match."
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // });
-}
+      if(newOrderProductResult.rowCount > 0) {
+        if(newProductResult.rowCount > 0){
+          res.status(201).json({
+            status: "OK",
+            data: {
+              orderProduct: newProductResult.rows[0]
+            }
+          })
+        } else {
+          res.status(500).json({
+            status: "Not sure what happened. Something went wrong with updating Product stock."
+          })
+        }
+      } else {
+        res.status(500).json({
+          status: "Not sure what happened. Something went wrong with updating Order Product quantity."
+        })
+      }
+    } else {
+      res.status(400).json({
+        status: "Not enough stock."
+      })
+    }
+    
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 // DELETE ORDER PRODUCT
 router.delete('/api/v1/orderProduct/:id', async (req, res) => {
@@ -171,6 +149,34 @@ router.delete('/api/v1/orderProduct/:id', async (req, res) => {
         status: "OK",
         data: {
           orderProduct: resultGET.rows[0]
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "ID did not match."
+      });
+    }
+  } catch (error) {
+    console.log(error)
+  }
+});
+
+// DELETE ORDER PRODUCTS FROM ORDER
+router.delete('/api/v1/orderProducts/:orderID', async (req, res) => {
+  try {
+    const resultGET = await db.query(
+      'SELECT * FROM public."OrderProduct" WHERE "orderID" = $1;', [
+      req.params.orderID
+    ])
+    await db.query(
+      'DELETE FROM public."OrderProduct" WHERE "orderID" = $1',[
+      req.params.orderID
+    ])
+    if (resultGET.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          orderProducts: resultGET.rows[0]
         }
       })
     } else {
