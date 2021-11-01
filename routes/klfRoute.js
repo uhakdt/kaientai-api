@@ -222,7 +222,7 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
     dataMain.orderProducts.forEach(orderItem => {
       for (let i = 0; i < listOfProductVariantOption.length; i++) {
         let stockItem = listOfProductVariantOption[i];
-        if(stockItem.name.toLowerCase() === orderItem.productName.toLowerCase() && orderItem.quantity <= stockItem.stock){
+        if(stockItem.name.toLowerCase() === orderItem.title.toLowerCase() && orderItem.quantity <= stockItem.stock){
           orderToBeFulfilledCount += 1;
           break;
         }
@@ -258,7 +258,7 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
               // ITERATE OVER STOCK ITEMS
               for (let i = 0; i < listOfProductVariantOption.length; i++) {
                 const stockItem = listOfProductVariantOption[i];
-                if(stockItem.name.toLowerCase() === orderItem.productName.toLowerCase()){
+                if(stockItem.name.toLowerCase() === orderItem.title.toLowerCase()){
                   // ADD ORDER PRODUCT
                   reqOptAddOrderProduct.json.productVariantOptionID = stockItem.id;
                   reqOptAddOrderProduct.json.quantity = orderItem.quantity;
