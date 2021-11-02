@@ -231,16 +231,16 @@ router.delete('/api/v1/cartProduct/:id', async (req, res) => {
   }
 });
 
-// DELETE CART PRODUCTS BY USER
-router.delete('/api/v1/cartProducts/:userID', async (req, res) => {
+// DELETE CART PRODUCTS BY USER EMAIL
+router.delete('/api/v1/cartProducts/userEmail/:email', async (req, res) => {
   try {
     const resultGET = await db.query(
-      'SELECT * FROM public."CartProduct" WHERE "userID" = $1;', [
-      req.params.userID
+      'SELECT * FROM public."CartProduct" WHERE email = $1;', [
+      req.params.email
     ])
     await db.query(
-      'DELETE FROM public."CartProduct" WHERE "userID" = $1',[
-      req.params.userID
+      'DELETE FROM public."CartProduct" WHERE email = $1',[
+      req.params.email
     ])
     if (resultGET.rowCount > 0) {
       res.status(200).json({

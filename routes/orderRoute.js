@@ -22,7 +22,7 @@ const reqOptDeleteOrderProducts = {
 }
 
 const reqOptDeleteCartProducts = {
-  url: `${currentURL}/api/v1/cartProducts/`,
+  url: `${currentURL}/api/v1/cartProducts/userEmail/`,
   method: 'DELETE'
 }
 
@@ -176,6 +176,8 @@ router.post('/api/v1/order', async (req, res) => {
         reqOptCreateOrderProduct.json.title = item.title
         reqOptCreateOrderProduct.json.quantity = item.quantity
         request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
+          console.log(err)
+          console.log(resCreatOrderProduct)
           return resCreatOrderProduct.body.data
         })
       }
@@ -190,7 +192,7 @@ router.post('/api/v1/order', async (req, res) => {
 
       // Delete Cart Products
       const deleteCartProducts = async item => {
-        reqOptDeleteCartProducts.url = reqOptDeleteCartProducts.url + req.body.userID;
+        reqOptDeleteCartProducts.url = reqOptDeleteCartProducts.url + req.body.contactEmail;
         request(reqOptDeleteCartProducts, (err, resDeleteCartProducts, body) => {
           return resDeleteCartProducts.body.data
         })
