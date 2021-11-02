@@ -55,7 +55,7 @@ router.post('/api/v1/cartProduct', async (req, res) => {
   try {
     // Check if Cart Product of same product already exists (to add instead of create new one if yes)
     console.log("running /cartProduct");
-    const result = await db.query('SELECT * FROM public."CartProduct" WHERE email = $1 and title = $2', [
+    const result = await db.query('SELECT * FROM public."CartProduct" WHERE email = $1 and title = $2;', [
       req.body.email,
       req.body.title
     ])
@@ -93,7 +93,7 @@ router.post('/api/v1/cartProduct', async (req, res) => {
         req.body.quantity,
         req.body.email
       ])
-      const oldStock = await db.query('SELECT * FROM public."Product" WHERE title = $1 returning *', [
+      const oldStock = await db.query('SELECT * FROM public."Product" WHERE title = $1;', [
         req.body.title
       ])
       await db.query('UPDATE public."Product" SET stock=$2 WHERE title=$1;', [
