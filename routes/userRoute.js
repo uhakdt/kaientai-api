@@ -49,6 +49,30 @@ router.get('/api/v1/user/:id', async (req, res) => {
   }
 });
 
+// GET USER BY EMAIL
+router.get('/api/v1/user/email/:email', async (req, res) => {
+  try {
+    const result = await db.query(
+      'SELECT * FROM public."User" WHERE email = $1;', [
+      req.params.email
+    ])
+    if(result.rowCount > 0){
+      res.status(200).json({
+        status: "OK",
+        data: {
+          user: result.rows[0]
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "ID did not match.",
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
+});
+
 // GET USER ID BY EMAIL
 router.post('/api/v1/user/:email', async (req, res) => {
   try {
