@@ -72,6 +72,30 @@ router.get('/api/v1/orders/perSupplier/:supplierID', async (req, res) => {
   }
 });
 
+// GET ORDERS BY USER EMAIL
+router.get('/api/v1/orders/perUserEmail/:email', async (req, res) => {
+  try {
+    const results = await db.query('SELECT * FROM public."Order" WHERE "contactEmail"=$1;', [
+      req.params.email
+    ])
+
+    if (results.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          orders: results.rows
+        }
+      });
+    } else {
+      res.status(204).json({
+        status: "No Results."
+      });
+    }
+  } catch (error) {
+    console.log(error)
+  }
+});
+
 // GET ORDER
 router.get('/api/v1/order/:id', async (req, res) => {
   try {
