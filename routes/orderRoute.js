@@ -6,25 +6,14 @@ const router = express.Router();
 
 let currentURL = process.env.URL_DEV;
 
-const reqOptCreateOrderProduct = {
-  url: `${currentURL}/api/v1/orderProduct`,
-  method: 'POST',
-  json: {
-    "orderID": null,
-    "title": null,
-    "quantity": null
-  }
-}
+
 
 const reqOptDeleteOrderProducts = {
   url: `${currentURL}/api/v1/orderProducts/`,
   method: 'DELETE'
 }
 
-const reqOptDeleteCartProducts = {
-  url: `${currentURL}/api/v1/cartProducts/userEmail/`,
-  method: 'DELETE'
-}
+
 
 // GET ORDERS
 router.get('/api/v1/orders', async (req, res) => {
@@ -171,9 +160,15 @@ router.post('/api/v1/order', async (req, res) => {
       // Create Order Products from Cart Products
       
       const createOrderProducts = async item => {
-        reqOptCreateOrderProduct.json.orderID = resultCreateOrder.rows[0].id;
-        reqOptCreateOrderProduct.json.title = item.title
-        reqOptCreateOrderProduct.json.quantity = item.quantity
+        const reqOptCreateOrderProduct = {
+          url: `${currentURL}/api/v1/orderProduct`,
+          method: 'POST',
+          json: {
+            "orderID": resultCreateOrder.rows[0].id,
+            "title": item.title,
+            "quantity": item.quantity
+          }
+        }
         request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
           console.log(body);
           if(body === undefined){
@@ -193,7 +188,10 @@ router.post('/api/v1/order', async (req, res) => {
 
       // Delete Cart Products
       const deleteCartProducts = async item => {
-        reqOptDeleteCartProducts.url = reqOptDeleteCartProducts.url + req.body.contactEmail;
+        const reqOptDeleteCartProducts = {
+          url: `${currentURL}/api/v1/cartProducts/userEmail/${req.body.contactEmail}`,
+          method: 'DELETE'
+        }
         request(reqOptDeleteCartProducts, (err, resDeleteCartProducts, body) => {
           console.log(body);
           if(body === undefined){
