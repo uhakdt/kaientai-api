@@ -4,7 +4,7 @@ const request = require('request');
 
 const router = express.Router();
 
-let currentURL = process.env.URL_DEV;
+let currentURL = process.env.URL_PROD;
 
 
 
