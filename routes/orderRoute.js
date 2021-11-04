@@ -175,7 +175,8 @@ router.post('/api/v1/order', async (req, res) => {
         reqOptCreateOrderProduct.json.title = item.title
         reqOptCreateOrderProduct.json.quantity = item.quantity
         request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
-          return resCreatOrderProduct.body.data
+          console.log(resCreatOrderProduct)
+          return body
         })
       }
       const getCreateOrderProductsData = async () => {
