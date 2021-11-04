@@ -53,7 +53,7 @@ router.get('/api/v1/postcode/:id', async (req, res) => {
 router.post('/api/v1/postcode/check', async (req, res) => {
   try {
     // Remove spaces
-    let customerPostcode = req.body.postcode;
+    let customerPostcode = req.body.code;
     customerPostcode = customerPostcode.replace(/\s+/g, '');
 
     // Take only 1st part of postcode and convert to Upper case
@@ -71,7 +71,7 @@ router.post('/api/v1/postcode/check', async (req, res) => {
         res.status(200).json({
           status: "OK",
           data: {
-            postcode: result
+            postcode: customerPostcode
           }
         })
       } else {

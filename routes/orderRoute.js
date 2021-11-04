@@ -167,17 +167,19 @@ router.post('/api/v1/order', async (req, res) => {
       req.body.offerID,
       req.body.extOrderID
     ])
-    console.log("ORDER CREATED: ", resultCreateOrder.rows[0])
-
     if(resultCreateOrder.rowCount > 0){
       // Create Order Products from Cart Products
+      res.status(200).json({
+        status: "OK",
+        data: {
+          order: resultCreateOrder.rows[0]
+        }
+      })
       const createOrderProducts = async item => {
         reqOptCreateOrderProduct.json.orderID = resultCreateOrder.rows[0].id;
         reqOptCreateOrderProduct.json.title = item.title
         reqOptCreateOrderProduct.json.quantity = item.quantity
         request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
-          console.log(err)
-          console.log(resCreatOrderProduct)
           return resCreatOrderProduct.body.data
         })
       }
@@ -185,9 +187,8 @@ router.post('/api/v1/order', async (req, res) => {
         return Promise.all(req.body.cartProducts.map(item => createOrderProducts(item)))
       }
       getCreateOrderProductsData().then(data => {
-        console.log(data);
       }).catch(error => {
-        console.log()
+        console.log(error)
       })
 
       // Delete Cart Products
@@ -198,7 +199,6 @@ router.post('/api/v1/order', async (req, res) => {
         })
       }
       deleteCartProducts(req.body.cartProducts[0]).then(data => {
-        console.log(data);
       }).catch(error => {
         console.log(error)
       })
