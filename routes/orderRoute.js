@@ -169,19 +169,12 @@ router.post('/api/v1/order', async (req, res) => {
     ])
     if(resultCreateOrder.rowCount > 0){
       // Create Order Products from Cart Products
-      res.status(200).json({
-        status: "OK",
-        data: {
-          order: resultCreateOrder.rows[0]
-        }
-      })
+      
       const createOrderProducts = async item => {
         reqOptCreateOrderProduct.json.orderID = resultCreateOrder.rows[0].id;
         reqOptCreateOrderProduct.json.title = item.title
         reqOptCreateOrderProduct.json.quantity = item.quantity
-        console.log("Test1")
         request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
-          console.log(body)
           return resCreatOrderProduct.body.data
         })
       }

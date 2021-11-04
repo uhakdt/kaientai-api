@@ -54,12 +54,11 @@ router.get('/api/v1/orderProduct/:id', async (req, res) => {
 router.post('/api/v1/orderProduct', async (req, res) => {
   try {
     const result = await db.query(
-      'INSERT INTO public."OrderProduct"("orderID", title, quantity) VALUES ($1, $2, $3) returning *', [
+      'INSERT INTO public."OrderProduct" ("orderID", title, quantity) VALUES ($1, $2, $3) returning *', [
       req.body.orderID,
       req.body.title,
       req.body.quantity,
     ])
-    console.log(result)
     if(result.rowCount > 0) {
       res.status(201).json({
         status: "OK",
