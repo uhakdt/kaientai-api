@@ -59,6 +59,7 @@ router.post('/api/v1/orderProduct', async (req, res) => {
       req.body.title,
       req.body.quantity,
     ])
+    console.log(result)
     if(result.rowCount > 0) {
       res.status(201).json({
         status: "OK",

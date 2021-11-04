@@ -179,7 +179,9 @@ router.post('/api/v1/order', async (req, res) => {
         reqOptCreateOrderProduct.json.orderID = resultCreateOrder.rows[0].id;
         reqOptCreateOrderProduct.json.title = item.title
         reqOptCreateOrderProduct.json.quantity = item.quantity
+        console.log("Test1")
         request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
+          console.log(body)
           return resCreatOrderProduct.body.data
         })
       }
