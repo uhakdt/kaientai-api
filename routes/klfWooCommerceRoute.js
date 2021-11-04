@@ -162,6 +162,8 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
     request(reqOptPostCodeCheck, (err, resPostCodeCheck, body) => {
       if (err) {
         console.log(err);
+        console.log(body);
+        console.log(resPostCodeCheck);
       } else if (resPostCodeCheck.statusCode === 200) {
         
         // CHECK USER IS ALREADY REGISTERED
