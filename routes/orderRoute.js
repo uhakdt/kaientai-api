@@ -175,37 +175,46 @@ router.post('/api/v1/order', async (req, res) => {
         reqOptCreateOrderProduct.json.title = item.title
         reqOptCreateOrderProduct.json.quantity = item.quantity
         request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
-          console.log(resCreatOrderProduct)
-          return body
-        })
-      }
+          console.log(body);
+          if(body === undefined){
+            console.log(err);
+          } else {
+            return body;
+          };
+        });
+      };
       const getCreateOrderProductsData = async () => {
         return Promise.all(req.body.cartProducts.map(item => createOrderProducts(item)))
-      }
+      };
       getCreateOrderProductsData().then(data => {
       }).catch(error => {
-        console.log(error)
-      })
+        console.log(error);
+      });
 
       // Delete Cart Products
       const deleteCartProducts = async item => {
         reqOptDeleteCartProducts.url = reqOptDeleteCartProducts.url + req.body.contactEmail;
         request(reqOptDeleteCartProducts, (err, resDeleteCartProducts, body) => {
-          return resDeleteCartProducts.body.data
-        })
-      }
+          console.log(body);
+          if(body === undefined){
+            console.log(err);
+          } else {
+            return body
+          };
+        });
+      };
       deleteCartProducts(req.body.cartProducts[0]).then(data => {
       }).catch(error => {
-        console.log(error)
-      })
+        console.log(error);
+      });
 
       res.status(201).json({
         status: "OK",
-      })
-    }
+      });
+    };
   } catch (error) {
     console.log(error);
-  }
+  };
 });
 
 // UPDATE ORDER
