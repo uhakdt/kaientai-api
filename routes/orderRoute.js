@@ -170,7 +170,7 @@ router.post('/api/v1/order', async (req, res) => {
           }
         }
         request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
-          console.log(body);
+          console.log(resCreatOrderProduct);
           if(body === undefined){
             console.log(err);
           } else {
@@ -193,7 +193,7 @@ router.post('/api/v1/order', async (req, res) => {
           method: 'DELETE'
         }
         request(reqOptDeleteCartProducts, (err, resDeleteCartProducts, body) => {
-          console.log(body);
+          console.log(resDeleteCartProducts);
           if(body === undefined){
             console.log(err);
           } else {
