@@ -11,7 +11,6 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Routes
-app.use(require('./routes/klfRoute.js'));
 app.use(require('./routes/klfWooCommerceRoute.js'));
 app.use(require('./routes/orderRoute.js'));
 app.use(require('./routes/orderProductRoute.js'));

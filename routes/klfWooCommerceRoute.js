@@ -49,7 +49,7 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
 
     let dataMain = {
       orderID: null,
-      name: req.body.dataBody.shipping.first_name + req.body.dataBody.shipping.last_name,
+      name: req.body.dataBody.shipping.first_name + " " + req.body.dataBody.shipping.last_name,
       email: req.body.dataBody.billing.email,
       phone: req.body.dataBody.billing.phone,
       address1: req.body.dataBody.shipping.address_1,
@@ -253,6 +253,7 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
         if(!bool) {
           // ADDING ORDER
           request(reqOptAddOrder, (err, resAddOrder, body) => {
+            dataMain.orderID = resAddOrder.body.data.order.id;
             //ITERATE OVER ORDER ITEMS
             for (let i = 0; i < dataMain.orderProducts.length; i++) {
               const orderItem = dataMain.orderProducts[i];
