@@ -208,6 +208,9 @@ router.post('/api/v1/order', async (req, res) => {
 
       res.status(201).json({
         status: "OK",
+        data: {
+          order: resultCreateOrder.rows[0]
+        }
       });
     };
   } catch (error) {
