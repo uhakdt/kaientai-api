@@ -68,6 +68,8 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
       supplierContactEmail: "mierdluffy@gmail.com",
       dateAndTime: dt
     }
+    
+    console.log(dataMain);
 
     const reqOptPostCodeCheck = {
       url: `${currentURL}/api/v1/postcode/check`,
