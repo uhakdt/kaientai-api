@@ -82,7 +82,7 @@ router.post('/api/v1/postcode/check', async (req, res) => {
           GetDateAndTimeNow()
         ])
         // HTTP Code 204: Empty Response
-        res.status(204).json({
+        res.status(200).json({
           status: "We do not cover this Postcode area yet.",
           data: {
             postcode: nonLocalPostcodeResult.rows[0]
