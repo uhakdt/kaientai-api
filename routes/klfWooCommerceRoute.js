@@ -194,7 +194,7 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
         })
 
       } else if(resPostCodeCheck.statusCode === 204) {
-        console.log("We do not cover this postcode area.");
+        console.log("We do not cover this postcode area: ", resPostCodeCheck.body.data.postcode);
       } else {
         console.log("Wrong Postcode input.");
       }
