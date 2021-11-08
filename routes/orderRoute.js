@@ -6,14 +6,10 @@ const router = express.Router();
 
 let currentURL = process.env.URL_PROD;
 
-
-
 const reqOptDeleteOrderProducts = {
   url: `${currentURL}/api/v1/orderProducts/`,
   method: 'DELETE'
 }
-
-
 
 // GET ORDERS
 router.get('/api/v1/orders', async (req, res) => {
@@ -169,10 +165,9 @@ router.post('/api/v1/order', async (req, res) => {
             "quantity": item.quantity
           }
         }
-        request(reqOptCreateOrderProduct, (err, resCreatOrderProduct, body) => {
-          console.log(resCreatOrderProduct);
+        request(reqOptCreateOrderProduct, (error, resCreatOrderProduct, body) => {
           if(body === undefined){
-            console.log(err);
+            console.log(error);
           } else {
             return body;
           };
@@ -192,10 +187,9 @@ router.post('/api/v1/order', async (req, res) => {
           url: `${currentURL}/api/v1/cartProducts/userEmail/${req.body.contactEmail}`,
           method: 'DELETE'
         }
-        request(reqOptDeleteCartProducts, (err, resDeleteCartProducts, body) => {
-          console.log(resDeleteCartProducts);
+        request(reqOptDeleteCartProducts, (error, resDeleteCartProducts, body) => {
           if(body === undefined){
-            console.log(err);
+            console.log(error);
           } else {
             return body
           };
@@ -267,9 +261,9 @@ router.delete('/api/v1/order/:id', async (req, res) => {
     ])
     reqOptDeleteOrderProducts.url = reqOptDeleteOrderProducts.url + resultGET.rows[0].id;
 
-    request(reqOptDeleteOrderProducts, (err, resDeleteOrderProducts, body) => {
-      console.log(err)
-      if(!err){
+    request(reqOptDeleteOrderProducts, (error, resDeleteOrderProducts, body) => {
+      console.log(error)
+      if(!error){
         db.query(
           'DELETE FROM public."Order" WHERE id = $1',[
           req.params.id

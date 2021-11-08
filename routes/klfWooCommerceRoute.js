@@ -69,8 +69,6 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
       dateAndTime: dt
     }
     
-    console.log(dataMain);
-
     const reqOptPostCodeCheck = {
       url: `${currentURL}/api/v1/postcode/check`,
       method: 'POST',
@@ -161,17 +159,16 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
     };
 
     // CHECK POSTCODE
-    request(reqOptPostCodeCheck, (err, resPostCodeCheck, body) => {
-      if (err) {
-        console.log(err);
-        console.log(body);
-        console.log(resPostCodeCheck);
-      } else if (resPostCodeCheck.statusCode === 200) {
+    request(reqOptPostCodeCheck, (error, resPostCodeCheck, body) => {
+      if (error) {
+        console.log(error);
+      } else if (true) {
+      // else if (resPostCodeCheck.statusCode === 200) {
         
         // CHECK USER IS ALREADY REGISTERED
-        request(reqOptUserCheck, (err, resUserCheck, body) => {
-          if (err) {
-            console.log(err);
+        request(reqOptUserCheck, (error, resUserCheck, body) => {
+          if (error) {
+            console.log(error);
           }
           // USER EXISTS
           else if(resUserCheck.statusCode === 200) {
@@ -182,15 +179,15 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
           // USER DOES NOT EXIST
           else if(resUserCheck.statusCode === 204) {
             // ADD ADDRESS
-            request(reqOptAddAddress, (err, resAddAddress, body) => {
-              if(err){
-                console.log(err);
+            request(reqOptAddAddress, (error, resAddAddress, body) => {
+              if(error){
+                console.log(error);
               } else if (resAddAddress.statusCode === 201) {
                 let addressID = resAddAddress.body.data.address.id;
                 reqOptAddUser.json.extUserID = dataMain.extUserID;
                 reqOptAddUser.json.addressID = addressID;
                 // ADD USER
-                request(reqOptAddUser, (err, resAddUser, body) => {
+                request(reqOptAddUser, (error, resAddUser, body) => {
                   reqOptAddOrder.json.userID = resAddUser.body.data.user.id;
                   dataMain.intUserID = resAddUser.body.data.user.id;
                   CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
@@ -223,7 +220,7 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
   // CHECK IF ORDER CAN BE FULFILED
   let orderToBeFulfilledCount = 0;
   let orderToBeFulfilled = false;
-  request(reqOptGetProducts, (err, resGetProducts, body) => {
+  request(reqOptGetProducts, (error, resGetProducts, body) => {
     let listOfProduct = JSON.parse(body);
     listOfProduct = listOfProduct.data.products;
 
@@ -231,8 +228,6 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
     dataMain.orderProducts.forEach(orderItem => {
       for (let i = 0; i < listOfProduct.length; i++) {
         let stockItem = listOfProduct[i];
-        // console.log("StockItem: ", stockItem)
-        // console.log("Qty: ", stockItem.quantity)
         if(stockItem.title.toLowerCase() === orderItem.title.toLowerCase() && orderItem.quantity <= stockItem.stock){
           orderToBeFulfilledCount += 1;
           break;
@@ -245,7 +240,7 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
     if(orderToBeFulfilled){
 
       // CHECK IF ORDER EXISTS
-      request(reqOptCheckExtOrderExists, (err, resCheckExtOrderExists, body) => {
+      request(reqOptCheckExtOrderExists, (error, resCheckExtOrderExists, body) => {
         let bool;
         if(body.includes("order")){
           bool = true
@@ -254,7 +249,7 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
         }
         if(!bool) {
           // ADDING ORDER
-          request(reqOptAddOrder, (err, resAddOrder, body) => {
+          request(reqOptAddOrder, (error, resAddOrder, body) => {
             dataMain.orderID = resAddOrder.body.data.order.id;
             //ITERATE OVER ORDER ITEMS
             for (let i = 0; i < dataMain.orderProducts.length; i++) {
@@ -266,7 +261,7 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
                 reqOptUpdateStock.json.id = stockItem.id
                 reqOptUpdateStock.json.stock = stockItem.stock - orderItem.quantity;
                 if(orderItem.title.toLowerCase() === stockItem.title.toLowerCase()){
-                  request(reqOptUpdateStock, (err, resUpdateStock, body) => {
+                  request(reqOptUpdateStock, (error, resUpdateStock, body) => {
                     console.log("Updating stock")
                   })
                 }

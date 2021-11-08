@@ -54,28 +54,23 @@ router.get('/api/v1/cartProduct/:id', async (req, res) => {
 router.post('/api/v1/cartProduct', async (req, res) => {
   try {
     // Check if Cart Product of same product already exists (to add instead of create new one if yes)
-    console.log("running /cartProduct");
     const result = await db.query('SELECT * FROM public."CartProduct" WHERE email = $1 and title = $2;', [
       req.body.email,
       req.body.title
     ])
     if(result.rows.length > 0){
-      console.log("cart product exists");
       const finalResult = await db.query('UPDATE public."CartProduct"	SET quantity=$1	WHERE email = $2 and title = $3 returning *;', [
         req.body.quantity + result.rows[0].quantity,
         req.body.email,
         req.body.title
       ])
-      console.log("finalResult: ", finalResult);
       const oldStock = await db.query('SELECT * FROM public."Product" WHERE title=$1;', [
         req.body.title
       ])
-      console.log("result oldStock: ", oldStock);
       const resutlUpdateProduct = await db.query('UPDATE public."Product" SET stock=$1 WHERE title=$2 returning *', [
         oldStock.rows[0].stock - req.body.quantity,
         req.body.title
       ])
-      console.log("result UpdateProduct: ", resutlUpdateProduct);
       res.status(200).json({
         status: "Updated Successfully.",
         data: {
@@ -129,7 +124,6 @@ router.put('/api/v1/cartProduct/stock', async (req, res) => {
     // Check the Operator and check if stock is available
     if(req.body.operator === "-" && oldStock >= cartProductQty){
       // Check if quantity of cart is going negative
-      console.log(cartProductQty)
       if(cartProductQty - 1 > 0){
         newStock = oldStock + 1
         const resultProduct = await db.query(

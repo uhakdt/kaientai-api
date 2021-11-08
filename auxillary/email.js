@@ -30,9 +30,9 @@ const SendEmailToKaientai = (dataMain) => {
     Country: ${dataMain.country}\n
     `
   };
-  transporter.sendMail(mailOptionsToTeam, function(err, info) {
-    if(err){
-      console.log(err);
+  transporter.sendMail(mailOptionsToTeam, function(error, info) {
+    if(error){
+      console.log(error);
     } else {
       console.log('Email has been sent to Team!');
     }
@@ -66,9 +66,9 @@ const SendEmailToSupplier = (dataMain) => {
     Mier at Kaientai`
   };
   
-  transporter.sendMail(mailOptionsToSupplier, function(err, info) {
-    if(err){
-      console.log(err);
+  transporter.sendMail(mailOptionsToSupplier, function(error, info) {
+    if(error){
+      console.log(error);
     } else {
       console.log(`Email has been sent to ${dataMain.supplierContactName}!`);
     }
