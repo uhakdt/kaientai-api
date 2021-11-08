@@ -2,14 +2,10 @@ const express = require('express');
 const db = require('../db');
 const request = require('request');
 const email = require('../auxillary/email');
+const GetDateAndTimeNow = require('../auxillary/dateAndTimeNow');
 
 const router = express.Router();
 
-
-Date.prototype.addHours = function(h) {
-  this.setTime(this.getTime());
-  return this;
-}
 
 let currentURL = process.env.URL_PROD;
 
@@ -25,8 +21,6 @@ const reqOptGetProducts = {
 
 router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
   try {
-    let dt = new Date().addHours(1).toISOString().replace('T', ' ').replace();
-    dt = dt.substring(0, dt.length - 5);
 
     // Variable declarations
     let listOfOrderProducts = []
@@ -66,7 +60,7 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
       supplierID: req.params.supplierID,
       supplierContactName: "Friendly Soaps",
       supplierContactEmail: "mierdluffy@gmail.com",
-      dateAndTime: dt
+      dateAndTime: GetDateAndTimeNow()
     }
     
     const reqOptPostCodeCheck = {

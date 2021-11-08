@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../db');
+const GetDateAndTimeNow = require('../auxillary/dateAndTimeNow');
 
 const router = express.Router();
 
@@ -75,15 +76,16 @@ router.post('/api/v1/postcode/check', async (req, res) => {
           }
         })
       } else {
-        await db.query('INSERT INTO public."PostcodeNonLocal"("supplierID", postcode) VALUES ($1, $2);', [
+        const nonLocalPostcodeResult = await db.query('INSERT INTO public."PostcodeNonLocal" ("supplierID", postcode, "dateAndTime") VALUES ($1, $2, $3) returning *', [
           req.body.supplierID,
-          customerPostcode
+          customerPostcode,
+          GetDateAndTimeNow()
         ])
         // HTTP Code 204: Empty Response
         res.status(204).json({
           status: "We do not cover this Postcode area yet.",
           data: {
-            postcode: customerPostcode
+            postcode: nonLocalPostcodeResult.rows[0]
           }
         })
       }
