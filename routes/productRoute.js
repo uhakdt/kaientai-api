@@ -25,6 +25,28 @@ router.get('/api/v1/products', async (req, res) => {
   }
 });
 
+// GET ALL PRODUCTS
+router.get('/api/v1/products/all', async (req, res) => {
+  try {
+    const results = await db.query(`SELECT * FROM public."Product" WHERE stock != 0;`)
+    
+    if (results.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          products: results.rows
+        }
+      });
+    } else {
+      res.status(204).json({
+        status: "No Results."
+      });
+    }
+  } catch (error) {
+    console.log(error)
+  }
+});
+
 // GET PRODUCTS BY CATEGORY
 router.get('/api/v1/products/:categoryName', async (req, res) => {
   try {

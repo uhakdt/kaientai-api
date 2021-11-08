@@ -18,7 +18,7 @@ if(process.env.NODE_ENV === 'Development') {
 }
 
 const reqOptGetProducts = {
-  url: `${currentURL}/api/v1/products`,
+  url: `${currentURL}/api/v1/products/all`,
   method: 'GET'
 };
 
@@ -30,22 +30,22 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
 
     // Variable declarations
     let listOfOrderProducts = []
-    let orderProduct = {
-      userID: null,
-      title: null,
-      price: null,
-      imageUrl: null,
-      quantity: null,
-      email: null
-    }
     for (let i = 0; i < req.body.dataBody.line_items.length; i++) {
+      let orderProduct = {
+        title: null,
+        price: null,
+        imageUrl: null,
+        quantity: null,
+      }
       const e = req.body.dataBody.line_items[i];
       orderProduct.title = e.name;
       orderProduct.price = e.price;
       orderProduct.quantity = e.quantity;
-      orderProduct.email = req.body.dataBody.billing.email;
       listOfOrderProducts.push(orderProduct);
     }
+    console.log("---------------------------------")
+    console.log("ALL ORDER PRODUCTS: \n", listOfOrderProducts)
+    console.log("---------------------------------")
 
     let dataMain = {
       orderID: null,
