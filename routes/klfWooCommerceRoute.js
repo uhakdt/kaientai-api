@@ -165,10 +165,7 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
           }
           // USER EXISTS
           else if(resUserCheck.statusCode === 200) {
-            dataMain.intUserID = resUserCheck.body.data.user.id;
-            if(dataMain.intUserID != null) {
-              CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
-            }
+            CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
           }
           // USER DOES NOT EXIST
           else if(resUserCheck.statusCode === 204) {
@@ -178,18 +175,15 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
                 console.log(error);
               } else if (resAddAddress.statusCode === 201) {
                 let addressID = resAddAddress.body.data.address.id;
-                reqOptAddUser.json.extUserID = dataMain.extUserID;
                 reqOptAddUser.json.addressID = addressID;
-                if(reqOptAddUser.json.extUserID != null && reqOptAddUser.json.addressID) {
-                  // ADD USER
-                  request(reqOptAddUser, (error, resAddUser, body) => {
-                    reqOptAddOrder.json.userID = resAddUser.body.data.user.id;
-                    dataMain.intUserID = resAddUser.body.data.user.id;
-                    if(reqOptAddOrder.json.userID != null && dataMain.intUserID != null){
-                      CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
-                    }
-                  })
-                }
+                // ADD USER
+                request(reqOptAddUser, (error, resAddUser, body) => {
+                  reqOptAddOrder.json.userID = resAddUser.body.data.user.id;
+                  dataMain.intUserID = resAddUser.body.data.user.id;
+                  if(reqOptAddOrder.json.userID != null && dataMain.intUserID != null){
+                    CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
+                  }
+                })
               }
             })
 
