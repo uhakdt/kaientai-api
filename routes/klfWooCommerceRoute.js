@@ -53,7 +53,7 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
       country: req.body.dataBody.shipping.country,
       postcode: req.body.dataBody.shipping.postcode,
       intUserID: null,
-      extUserID: req.body.dataBody.customer_id,
+      extUserID: null,
       orderProducts: listOfOrderProducts,
       totalAmount: req.body.dataBody.total,
       extOrderID: req.body.dataBody.id,
@@ -70,11 +70,6 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
         "supplierID": dataMain.supplierID,
         "code": dataMain.postcode
       },
-    };
-    
-    const reqOptUserCheck = {
-      url: `${currentURL}/api/v1/user/ext/${dataMain.extUserID}`,
-      method: 'POST'
     };
 
     const reqOptAddAddress = {
@@ -158,37 +153,21 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
         console.log(error);
       } else if (true) {
         
-        // CHECK USER IS ALREADY REGISTERED
-        request(reqOptUserCheck, (error, resUserCheck, body) => {
-          if (error) {
+        // ADD ADDRESS
+        request(reqOptAddAddress, (error, resAddAddress, body) => {
+          if(error){
             console.log(error);
-          }
-          // USER EXISTS
-          else if(resUserCheck.statusCode === 200) {
-            CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
-          }
-          // USER DOES NOT EXIST
-          else if(resUserCheck.statusCode === 204) {
-            // ADD ADDRESS
-            request(reqOptAddAddress, (error, resAddAddress, body) => {
-              if(error){
-                console.log(error);
-              } else if (resAddAddress.statusCode === 201) {
-                let addressID = resAddAddress.body.data.address.id;
-                reqOptAddUser.json.addressID = addressID;
-                // ADD USER
-                request(reqOptAddUser, (error, resAddUser, body) => {
-                  reqOptAddOrder.json.userID = resAddUser.body.data.user.id;
-                  dataMain.intUserID = resAddUser.body.data.user.id;
-                  if(reqOptAddOrder.json.userID != null && dataMain.intUserID != null){
-                    CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
-                  }
-                })
+          } else if (resAddAddress.statusCode === 201) {
+            let addressID = resAddAddress.body.data.address.id;
+            reqOptAddUser.json.addressID = addressID;
+            // ADD USER
+            request(reqOptAddUser, (error, resAddUser, body) => {
+              reqOptAddOrder.json.userID = resAddUser.body.data.user.id;
+              dataMain.intUserID = resAddUser.body.data.user.id;
+              if(reqOptAddOrder.json.userID != null && dataMain.intUserID != null){
+                CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
               }
             })
-
-          } else {
-            console.log(resUserCheck);
           }
         })
 
