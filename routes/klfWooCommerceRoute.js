@@ -156,7 +156,7 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
     request(reqOptPostCodeCheck, (error, resPostCodeCheck, body) => {
       if (error) {
         console.log(error);
-      } else if (resPostCodeCheck.statusCode === 200) {
+      } else if (true) {
         
         // CHECK USER IS ALREADY REGISTERED
         request(reqOptUserCheck, (error, resUserCheck, body) => {
@@ -165,9 +165,10 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
           }
           // USER EXISTS
           else if(resUserCheck.statusCode === 200) {
-            reqOptAddOrder.json.userID = resUserCheck.body.data.user.id;
             dataMain.intUserID = resUserCheck.body.data.user.id;
-            CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
+            if(dataMain.intUserID != null) {
+              CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
+            }
           }
           // USER DOES NOT EXIST
           else if(resUserCheck.statusCode === 204) {
@@ -179,12 +180,16 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
                 let addressID = resAddAddress.body.data.address.id;
                 reqOptAddUser.json.extUserID = dataMain.extUserID;
                 reqOptAddUser.json.addressID = addressID;
-                // ADD USER
-                request(reqOptAddUser, (error, resAddUser, body) => {
-                  reqOptAddOrder.json.userID = resAddUser.body.data.user.id;
-                  dataMain.intUserID = resAddUser.body.data.user.id;
-                  CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
-                })
+                if(reqOptAddUser.json.extUserID != null && reqOptAddUser.json.addressID) {
+                  // ADD USER
+                  request(reqOptAddUser, (error, resAddUser, body) => {
+                    reqOptAddOrder.json.userID = resAddUser.body.data.user.id;
+                    dataMain.intUserID = resAddUser.body.data.user.id;
+                    if(reqOptAddOrder.json.userID != null && dataMain.intUserID != null){
+                      CheckOrderFulfilment(reqOptCheckExtOrderExists, reqOptAddOrder, reqOptAddOrderProduct, reqOptUpdateStock, dataMain);
+                    }
+                  })
+                }
               }
             })
 

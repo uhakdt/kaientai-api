@@ -156,46 +156,17 @@ router.post('/api/v1/order', async (req, res) => {
       // Create Order Products from Cart Products
       
       const createOrderProducts = async item => {
-        const reqOptCreateOrderProduct = {
-          url: `${currentURL}/api/v1/orderProduct`,
-          method: 'POST',
-          json: {
-            "orderID": resultCreateOrder.rows[0].id,
-            "title": item.title,
-            "quantity": item.quantity
-          }
-        }
-        request(reqOptCreateOrderProduct, (error, resCreatOrderProduct, body) => {
-          if(body === undefined){
-            console.log(error);
-          } else {
-            return body;
-          };
-        });
+        const tempOrderProductResult = await db.query(
+          'INSERT INTO public."OrderProduct" ("orderID", title, quantity) VALUES ($1, $2, $3) returning *', [
+          resultCreateOrder.rows[0].id,
+          item.title,
+          item.quantity
+        ])
       };
       const getCreateOrderProductsData = async () => {
         return Promise.all(req.body.cartProducts.map(item => createOrderProducts(item)))
       };
       getCreateOrderProductsData().then(data => {
-      }).catch(error => {
-        console.log(error);
-      });
-
-      // Delete Cart Products
-      const deleteCartProducts = async item => {
-        const reqOptDeleteCartProducts = {
-          url: `${currentURL}/api/v1/cartProducts/userEmail/${req.body.contactEmail}`,
-          method: 'DELETE'
-        }
-        request(reqOptDeleteCartProducts, (error, resDeleteCartProducts, body) => {
-          if(body === undefined){
-            console.log(error);
-          } else {
-            return body
-          };
-        });
-      };
-      deleteCartProducts(req.body.cartProducts[0]).then(data => {
       }).catch(error => {
         console.log(error);
       });
