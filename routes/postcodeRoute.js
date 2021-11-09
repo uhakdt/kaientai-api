@@ -73,7 +73,8 @@ router.post('/api/v1/postcode/check', async (req, res) => {
           status: "OK",
           data: {
             postcode: customerPostcode
-          }
+          },
+          local: 'yes'
         })
       } else {
         const nonLocalPostcodeResult = await db.query('INSERT INTO public."PostcodeNonLocal" ("supplierID", postcode, "dateAndTime") VALUES ($1, $2, $3) returning *', [
@@ -85,8 +86,9 @@ router.post('/api/v1/postcode/check', async (req, res) => {
         res.status(200).json({
           status: "We do not cover this Postcode area yet.",
           data: {
-            postcode: nonLocalPostcodeResult.rows[0]
-          }
+            postcode: nonLocalPostcodeResult.rows[0],
+          },
+          local: 'no'
         })
       }
     } else {

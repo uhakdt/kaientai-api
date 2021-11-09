@@ -151,7 +151,7 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
     request(reqOptPostCodeCheck, (error, resPostCodeCheck, body) => {
       if (error) {
         console.log(error);
-      } else if (resPostCodeCheck.statusCode === 200) {
+      } else if (resPostCodeCheck.body.local === 'yes') {
         
         // ADD ADDRESS
         request(reqOptAddAddress, (error, resAddAddress, body) => {
