@@ -11,14 +11,14 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Routes
-app.use(require('./routes/klfWooCommerceRoute.js'));
-app.use(require('./routes/orderRoute.js'));
-app.use(require('./routes/orderProductRoute.js'));
-app.use(require('./routes/productRoute.js'));
-app.use(require('./routes/addressRoute.js'));
-app.use(require('./routes/userRoute.js'));
-app.use(require('./routes/postcodeRoute.js'));
-app.use(require('./routes/supplierRoute.js'));
-app.use(require('./routes/cartProductRoute.js'));
+app.use(require('./routes/klfWooCommerce.js'));
+app.use(require('./routes/order.js'));
+app.use(require('./routes/orderProduct.js'));
+app.use(require('./routes/product.js'));
+app.use(require('./routes/address.js'));
+app.use(require('./routes/user.js'));
+app.use(require('./routes/postcode.js'));
+app.use(require('./routes/supplier.js'));
+app.use(require('./routes/cartProduct.js'));
 
 module.exports = app;
