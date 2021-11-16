@@ -128,17 +128,17 @@ router.post('/api/v1/product', async (req, res) => {
 router.post('/api/v1/products', async (req, res) => {
   try {
     let results = [];
-    console.log(req.body)
     const listOfProducts = req.body.products;
 
     const addProducts = async () => {
       // Go through all products from the request body
       for (let i = 0; i < listOfProducts.length; i++) {
         const product = listOfProducts[i];
+        
+        // check if the product is already in the db
         let checkIfProductExists = await db.query('SELECT * FROM public."Product" WHERE "extID" = $1;', [
           product.extID
         ])
-        // check if the product is already in the db
         if(checkIfProductExists.rowCount === 0) {
           let productRes = await db.query(
             'INSERT INTO public."Product" ("supplierID", title, "imageUrl", price, stock, "extID", "weightInGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
@@ -198,6 +198,64 @@ router.put('/api/v1/product', async (req, res) => {
         status: "ID did not match."
       });
     }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// UPDATE PRODUCTS OR ADD EXTRA VARIANTS
+router.put('/api/v1/products', async (req, res) => {
+  try {
+    let results = [];
+    const listOfProducts = req.body.products;
+
+    const updateProducts = async () => {
+      // Go through all products from the request body
+      for (let i = 0; i < listOfProducts.length; i++) {
+        const product = listOfProducts[i];
+        
+        // check if the product is already in the db
+        let checkIfProductExists = await db.query('SELECT * FROM public."Product" WHERE "extID" = $1;', [
+          product.extID
+        ])
+        if(checkIfProductExists.rowCount > 0) {
+          let productRes = await db.query(
+            'UPDATE public."Product" SET title=$1, "imageUrl"=$2, price=$3, "weightInGrams"=$4 WHERE "extID"=$5 returning *', [
+            product.title,
+            product.imageUrl,
+            product.price,
+            product.weightInGrams,
+            product.extID
+          ])
+          results.push(productRes.rows[0]);
+        } else if(checkIfProductExists.rowCount === 0) {
+          let productRes = await db.query(
+            'INSERT INTO public."Product" ("supplierID", title, "imageUrl", price, stock, "extID", "weightInGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
+            product.supplierID,
+            product.title,
+            product.imageUrl,
+            product.price,
+            0,
+            product.extID,
+            product.weightInGrams
+          ])
+          results.push(productRes.rows[0]);
+        }
+      }
+      if(results.length > 0){
+        res.status(201).json({
+          status: "OK",
+          data: {
+            products: results
+          }
+        })
+      } else if(results.length === 0) {
+        res.status(204).json({
+          status: "All Products have already been added."
+        })
+      }
+    }
+    updateProducts();
   } catch (error) {
     console.log(error);
   }
