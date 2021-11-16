@@ -73,6 +73,31 @@ router.post('/api/v1/supplier/:supplierEmail', async (req, res) => {
   }
 });
 
+// CHECK EXT SUPPLIER EXISTS
+router.get('/api/v1/supplier/checkExtExists/:platform/:extID', async (req, res) => {
+  try {
+    const result = await db.query(`SELECT * FROM public."Supplier" WHERE "extID"=$1 and platform=$2;`, [
+      req.params.extID,
+      req.params.platform
+    ])
+
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          supplier: result.rows[0]
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "ID did not match."
+      });
+    }
+  } catch (error) {
+    console.log(error)
+  }
+});
+
 // UPDATE SUPPLIER
 router.put('/api/v1/supplier', async (req, res) => {
   try {
@@ -105,6 +130,60 @@ router.put('/api/v1/supplier', async (req, res) => {
     }
   } catch (error) {
     console.log(error)
+  }
+});
+
+// CREATE SUPPLIER
+router.post('/api/v1/supplier', async (req, res) => {
+  try {
+    const resultAddress = await db.query(
+      'INSERT INTO public."Address"(address1, address2, city, county, country, postcode) VALUES ($1, $2, $3, $4, $5, $6) returning *', [
+      req.body.address1,
+      req.body.address2,
+      req.body.city,
+      req.body.county,
+      req.body.country,
+      req.body.postcode
+    ])
+    if(resultAddress.rowCount > 0){
+      const result = await db.query(
+        'INSERT INTO public."Supplier" (name, "legalName", "contractStatus", "dateAndTimeContractSigned", "kaientaiLocalFulfilment", "contactName", "contactEmail", "contactPhone", "addressID", "bankDetailID", "registrationNumber", platform, "extID", active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning *', [
+          req.body.name,
+          req.body.legalName,
+          req.body.contractStatus,
+          req.body.dateAndTimeContractSigned,
+          req.body.kaientaiLocalFulfilment,
+          req.body.contactName,
+          req.body.contactEmail,
+          req.body.contactPhone,
+          resultAddress.rows[0].id,
+          req.body.bankDetailID,
+          req.body.registrationNumber,
+          req.body.platform,
+          req.body.extID,
+          req.body.active
+      ])
+  
+      if(result.rowCount > 0){
+        res.status(201).json({
+          status: "OK",
+          data: {
+            supplier: result.rows[0]
+          }
+        })
+      } else {
+        res.status(500).json({
+          status: "Not sure what happened."
+        })
+      }
+    } else {
+      res.status(500).json({
+        status: "Cannot add address."
+      })
+    }
+    
+  } catch (error) {
+    console.log(error);
   }
 });
 
