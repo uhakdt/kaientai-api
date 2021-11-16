@@ -98,16 +98,14 @@ router.get('/api/v1/product/:id', async (req, res) => {
 router.post('/api/v1/product', async (req, res) => {
   try {
     const result = await db.query(
-      'INSERT INTO public."Product"("supplierID", title, description, "imageUrl", "imagesUrl", "productRatingID", price, stock, active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *', [
+      'INSERT INTO public."Product"("supplierID", title, "imageUrl", price, stock, "extID", "weightInGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
       req.body.supplierID,
       req.body.title,
-      req.body.description,
       req.body.imageUrl,
-      req.body.imagesUrl,
-      req.body.productRatingID,
       req.body.price,
       req.body.stock,
-      req.body.active,
+      req.body.extID,
+      req.body.weightInGrams
     ])
     if(result.rowCount > 0){
       res.status(201).json({
@@ -126,21 +124,67 @@ router.post('/api/v1/product', async (req, res) => {
   }
 });
 
+// CREATE PRODUCTS
+router.post('/api/v1/products', async (req, res) => {
+  try {
+    let results = [];
+    console.log(req.body)
+    const listOfProducts = req.body.products;
+
+    const addProducts = async () => {
+      // Go through all products from the request body
+      for (let i = 0; i < listOfProducts.length; i++) {
+        const product = listOfProducts[i];
+        let checkIfProductExists = await db.query('SELECT * FROM public."Product" WHERE "extID" = $1;', [
+          product.extID
+        ])
+        // check if the product is already in the db
+        if(checkIfProductExists.rowCount === 0) {
+          let productRes = await db.query(
+            'INSERT INTO public."Product" ("supplierID", title, "imageUrl", price, stock, "extID", "weightInGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
+            product.supplierID,
+            product.title,
+            product.imageUrl,
+            product.price,
+            0,
+            product.extID,
+            product.weightInGrams
+          ])
+          results.push(productRes.rows[0]);
+        }
+      }
+      if(results.length > 0){
+        res.status(201).json({
+          status: "OK",
+          data: {
+            products: results
+          }
+        })
+      } else if(results.length === 0) {
+        res.status(204).json({
+          status: "All Products have already been added."
+        })
+      }
+    }
+    addProducts();
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // UPDATE PRODUCT
 router.put('/api/v1/product', async (req, res) => {
   try {
     const result = await db.query(
-      'UPDATE public."Product" SET "supplierID"=$2, title=$3, description=$4, "imageUrl"=$5, "imagesUrl"=$6, "productRatingID"=$7, price=$8, stock=$9, active=$10 WHERE id=$1 returning *', [
+      'UPDATE public."Product" SET "supplierID"=$2, title=$3, "imageUrl"=$4, price=$5, stock=$6, "extID"=$7, "weightInGrams"=$8 WHERE id=$1 returning *', [
       req.body.id,
       req.body.supplierID,
       req.body.title,
-      req.body.description,
       req.body.imageUrl,
-      req.body.imagesUrl,
-      req.body.productRatingID,
       req.body.price,
       req.body.stock,
-      req.body.active,
+      req.body.extID,
+      req.body.weightInGrams
     ])
     if (result.rowCount > 0) {
       res.status(200).json({
