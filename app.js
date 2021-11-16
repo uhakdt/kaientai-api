@@ -12,6 +12,7 @@ app.use(morgan("dev"));
 
 // Routes
 app.use(require('./routes/klfWooCommerce.js'));
+app.use(require('./routes/klfShopify.js'));
 app.use(require('./routes/order.js'));
 app.use(require('./routes/orderProduct.js'));
 app.use(require('./routes/product.js'));
