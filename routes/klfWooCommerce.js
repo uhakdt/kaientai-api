@@ -1,13 +1,12 @@
-const express = require('express');
-const db = require('../db');
-const request = require('request');
-const email = require('../auxillary/email');
-const GetDateAndTimeNow = require('../auxillary/dateAndTimeNow');
+import express from 'express';
+import request from 'request';
+import * as email from '../auxillary/email.js';
+import { GetDateAndTimeNow } from '../auxillary/dateAndTimeNow';
 
 const router = express.Router();
 
 
-let currentURL = process.env.URL_PROD;
+let currentURL = process.env.URL;
 
 if(process.env.NODE_ENV === 'Development') {
   currentURL = process.env.URL_DEV
@@ -253,4 +252,4 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
 }
 
 
-module.exports = router;
+export default router;
