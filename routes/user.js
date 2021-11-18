@@ -1,5 +1,5 @@
-const express = require('express');
-const db = require('../db');
+import express from 'express';
+import db from '../db';
 
 const router = express.Router();
 
@@ -226,4 +226,4 @@ router.delete('/api/v1/user/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

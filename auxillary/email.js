@@ -1,4 +1,4 @@
-var nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
 	service: 'gmail',
@@ -8,8 +8,7 @@ const transporter = nodemailer.createTransport({
 	}
 });
 
-
-const SendEmailToKaientai = (dataMain) => {
+export function SendEmailToKaientai (dataMain) {
   const mailOptionsToTeam = {
     from: process.env.GMAIL,
     to: 'uhakdt@gmail.com, mierdluffy@gmail.com',
@@ -39,7 +38,7 @@ const SendEmailToKaientai = (dataMain) => {
   });
 }
 
-const SendEmailToSupplier = (dataMain) => {
+export function SendEmailToSupplier (dataMain) {
   const mailOptionsToSupplier = {
     from: process.env.GMAIL,
     to: `${dataMain.supplierContactEmail}`,
@@ -75,6 +74,3 @@ const SendEmailToSupplier = (dataMain) => {
   });
 
 }
-
-exports.SendEmailToKaientai = SendEmailToKaientai;
-exports.SendEmailToSupplier = SendEmailToSupplier;

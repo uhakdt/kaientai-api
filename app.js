@@ -1,8 +1,8 @@
 // Dependencies
-require("dotenv").config();
-const express = require('express');
-const cors = require("cors");
-const morgan = require("morgan");
+import "dotenv/config.js";
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
 
 // Express Setup
 const app = express();
@@ -11,15 +11,24 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Routes
-app.use(require('./routes/klfWooCommerce.js'));
-app.use(require('./routes/klfShopify.js'));
-app.use(require('./routes/order.js'));
-app.use(require('./routes/orderProduct.js'));
-app.use(require('./routes/product.js'));
-app.use(require('./routes/address.js'));
-app.use(require('./routes/user.js'));
-app.use(require('./routes/postcode.js'));
-app.use(require('./routes/supplier.js'));
-app.use(require('./routes/cartProduct.js'));
+import klfWooCommerce from './routes/klfWooCommerce.js';
+import klfShopify from './routes/klfShopify.js';
+import order from './routes/order.js';
+import orderProduct from './routes/orderProduct.js';
+import product from './routes/product.js';
+import address from './routes/address.js';
+import user from './routes/user.js';
+import postcode from './routes/postcode.js';
+import supplier from './routes/supplier.js';
 
-module.exports = app;
+app.use(klfWooCommerce);
+app.use(klfShopify);
+app.use(order);
+app.use(orderProduct);
+app.use(product);
+app.use(address);
+app.use(user);
+app.use(postcode);
+app.use(supplier);
+
+export default app;

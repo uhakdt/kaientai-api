@@ -1,10 +1,10 @@
-const express = require('express');
-const db = require('../db');
-const request = require('request');
+import express from 'express';
+import db from '../db';
+import request from 'request';
 
 const router = express.Router();
 
-let currentURL = process.env.URL_PROD;
+let currentURL = process.env.URL;
 
 const reqOptDeleteOrderProducts = {
   url: `${currentURL}/api/v1/orderProducts/`,
@@ -155,8 +155,8 @@ router.post('/api/v1/order', async (req, res) => {
     if(resultCreateOrder.rowCount > 0){
       // Create Order Products from Cart Products
       
-      const createOrderProducts = async item => {
-        const tempOrderProductResult = await db.query(
+      const createOrderProduct = async item => {
+        await db.query(
           'INSERT INTO public."OrderProduct" ("orderID", title, quantity) VALUES ($1, $2, $3) returning *', [
           resultCreateOrder.rows[0].id,
           item.title,
@@ -164,7 +164,7 @@ router.post('/api/v1/order', async (req, res) => {
         ])
       };
       const getCreateOrderProductsData = async () => {
-        return Promise.all(req.body.cartProducts.map(item => createOrderProducts(item)))
+        return Promise.all(req.body.cartProducts.map(item => createOrderProduct(item)))
       };
       getCreateOrderProductsData().then(data => {
       }).catch(error => {
@@ -186,7 +186,7 @@ router.post('/api/v1/order', async (req, res) => {
 // UPDATE ORDER
 router.put('/api/v1/order', async (req, res) => {
   try {
-    const result = await db.query(
+    const resultUpdateOrder = await db.query(
       'UPDATE public."Order" SET "dateAndTime"=$2, "statusID"=$3, "supplierID"=$4, "userID"=$5, "totalAmount"=$6, "contactName"=$7, "contactEmail"=$8, "contactPhone"=$9, address1=$10, address2=$11, city=$12, county=$13, country=$14, postcode=$15, "offerID"=$16, "extOrderID"=$17 WHERE id = $1 returning *',[
       req.body.id,
       req.body.dateAndTime,
@@ -266,4 +266,4 @@ router.delete('/api/v1/order/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

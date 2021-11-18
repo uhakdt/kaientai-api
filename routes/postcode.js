@@ -1,6 +1,6 @@
-const express = require('express');
-const db = require('../db');
-const GetDateAndTimeNow = require('../auxillary/dateAndTimeNow');
+import express from 'express';
+import db from '../db';
+import { GetDateAndTimeNow } from '../auxillary/dateAndTimeNow';
 
 const router = express.Router();
 
@@ -180,4 +180,4 @@ router.delete('/api/v1/postcode/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
