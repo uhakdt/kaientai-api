@@ -206,11 +206,54 @@ router.put('/api/v1/order', async (req, res) => {
       req.body.offerID,
       req.body.extOrderID
     ])
-    if (result.rowCount > 0) {
-      res.status(200).json({
+    if (resultUpdateOrder.rowCount > 0) {
+      // Check if order Product exists
+      const updateOrderProduct = async (item, orderProductID) => {
+        await db.query(
+          'UPDATE public."OrderProduct" SET title=$2, quantity=$3	WHERE id=$1 returning *', [
+          orderProductID,
+          item.title,
+          item.quantity,
+        ])
+      };
+
+      const createOrderProduct = async item => {
+        await db.query(
+          'INSERT INTO public."OrderProduct" ("orderID", title, quantity) VALUES ($1, $2, $3) returning *', [
+          resultUpdateOrder.rows[0].id,
+          item.title,
+          item.quantity
+        ])
+      };
+
+      const checkIfOrderProductExists = async item => {
+        const tempOrderProductExistsResult = await db.query(
+          'SELECT id, "orderID", title, quantity FROM public."OrderProduct" WHERE "orderID" = $1 and title = $2;', [
+          resultUpdateOrder.rows[0].id,
+          item.title
+        ])
+  
+        if(tempOrderProductExistsResult.rowCount > 0) {
+          updateOrderProduct(item, tempOrderProductExistsResult.rows[0].id);
+        } else {
+          createOrderProduct(item);
+        }
+      }
+
+      const getCreateOrderProductsData = async () => {
+        return Promise.all(req.body.cartProducts.map(item => checkIfOrderProductExists(item)))
+      };
+      getCreateOrderProductsData().then(data => {
+      }).catch(error => {
+        console.log(error);
+      });
+
+
+      
+      res.status(201).json({
         status: "OK",
         data: {
-          order: result.rows[0]
+          order: resultUpdateOrder.rows[0]
         }
       });
     } else {
