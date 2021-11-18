@@ -4,15 +4,31 @@ export function productFormatOrderProducts (orderProducts) {
   for (let i = 0; i < orderProducts.length; i++) {
     const e = orderProducts[i];
     let orderProduct = {
-      title: e.variant_title != "" ? e.title + " - " + e.variant_title : e.title,
+      title: e.variant_title === "" || e.variant_title === null ? e.title: e.title + " - " + e.variant_title,
       price: e.price,
       imageUrl: null,
       quantity: e.quantity,
     }
     listOfOrderProducts.push(orderProduct);
   }
-  console.log("---------------------------------")
-  console.log("ALL ORDER PRODUCTS: \n", listOfOrderProducts)
-  console.log("---------------------------------")
   return listOfOrderProducts;
+}
+
+export function productCheckIfEnoughStock (orderProducts, listOfProduct) {
+  let orderToBeFulfilledCount = 0;
+  let orderToBeFulfilled = false;
+  // ORDER ITEMS QUANTITY <= STOCK ITEMS QUANTITY
+  orderProducts.forEach(orderItem => {
+    for (let i = 0; i < listOfProduct.length; i++) {
+      let stockItem = listOfProduct[i];
+      if(stockItem.title.toLowerCase() === orderItem.title.toLowerCase() && orderItem.quantity <= stockItem.stock){
+        orderToBeFulfilledCount += 1;
+        break;
+      }
+    }
+  })
+  if(orderToBeFulfilledCount === orderProducts.length){
+    orderToBeFulfilled = true;
+  }
+  return orderToBeFulfilled;
 }
