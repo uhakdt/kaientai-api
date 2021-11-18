@@ -21,7 +21,7 @@ router.get('/api/v1/products', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -43,7 +43,7 @@ router.get('/api/v1/products/all', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -67,7 +67,7 @@ router.get('/api/v1/products/:categoryName', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -90,7 +90,7 @@ router.get('/api/v1/product/:id', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -281,7 +281,7 @@ router.put('/api/v1/product/stock', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -306,7 +306,7 @@ router.delete('/api/v1/product/:id', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 

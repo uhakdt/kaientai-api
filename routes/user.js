@@ -21,7 +21,7 @@ router.get('/api/v1/users', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -45,7 +45,7 @@ router.get('/api/v1/user/:id', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -69,7 +69,7 @@ router.get('/api/v1/user/email/:email', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -93,7 +93,7 @@ router.post('/api/v1/user/:email', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -117,7 +117,7 @@ router.post('/api/v1/user/ext/:extUserID', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -194,7 +194,7 @@ router.put('/api/v1/user', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -222,7 +222,7 @@ router.delete('/api/v1/user/:id', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 

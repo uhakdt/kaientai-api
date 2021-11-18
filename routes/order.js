@@ -29,7 +29,7 @@ router.get('/api/v1/orders', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -53,7 +53,7 @@ router.get('/api/v1/orders/perSupplier/:supplierID', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -77,7 +77,7 @@ router.get('/api/v1/orders/perUserEmail/:email', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -101,7 +101,7 @@ router.get('/api/v1/order/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -125,7 +125,7 @@ router.get('/api/v1/order/ext/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 })
 
@@ -212,14 +212,14 @@ router.put('/api/v1/order', async (req, res) => {
         data: {
           order: result.rows[0]
         }
-      })
+      });
     } else {
       res.status(204).json({
         status: "ID did not match."
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -233,7 +233,7 @@ router.delete('/api/v1/order/:id', async (req, res) => {
     reqOptDeleteOrderProducts.url = reqOptDeleteOrderProducts.url + resultGET.rows[0].id;
 
     request(reqOptDeleteOrderProducts, (error, resDeleteOrderProducts, body) => {
-      console.log(error)
+      console.log(error);
       if(!error){
         db.query(
           'DELETE FROM public."Order" WHERE id = $1',[
@@ -262,7 +262,7 @@ router.delete('/api/v1/order/:id', async (req, res) => {
     })
 
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 

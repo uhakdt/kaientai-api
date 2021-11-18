@@ -21,7 +21,7 @@ router.get('/api/v1/suppliers', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -45,7 +45,7 @@ router.get('/api/v1/supplier/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -69,7 +69,7 @@ router.post('/api/v1/supplier/:supplierEmail', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -94,7 +94,7 @@ router.get('/api/v1/supplier/checkExtExists/:platform/:extID', async (req, res) 
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -129,7 +129,7 @@ router.put('/api/v1/supplier', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 

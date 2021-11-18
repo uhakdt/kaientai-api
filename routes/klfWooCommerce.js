@@ -181,7 +181,7 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
       status: "If Kaientai can fulfil it, we will send you a confirmation email."
     })
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 })
 

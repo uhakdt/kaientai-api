@@ -22,7 +22,7 @@ router.get('/api/v1/orderProducts/:orderID', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -46,7 +46,7 @@ router.get('/api/v1/orderProduct/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -157,7 +157,7 @@ router.delete('/api/v1/orderProduct/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -185,7 +185,7 @@ router.delete('/api/v1/orderProducts/:orderID', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 

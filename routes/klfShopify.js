@@ -190,7 +190,7 @@ router.post('/api/v1/klf/shopify/:supplierID', async (req, res) => {
 
 
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 })
 
@@ -256,14 +256,14 @@ let CheckOrderFulfilment = async (reqOptCheckExtOrderExists, reqOptAddOrder, req
           res.status(409).json({
             status: "Order already exists."
           })
-          console.log("Order already exists.");
+          console.log("Order already exists.")
         }
       })
     } else {
       res.status(406).json({
         status: "Order cannot be fulfiled."
       })
-      console.log("Order cannot be fulfiled.");
+      console.log("Order cannot be fulfiled.")
     }
   })
 }

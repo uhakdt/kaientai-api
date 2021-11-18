@@ -22,7 +22,7 @@ router.get('/api/v1/postcodes', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -46,7 +46,7 @@ router.get('/api/v1/postcode/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -101,7 +101,7 @@ router.post('/api/v1/postcode/check', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -151,7 +151,7 @@ router.put('/api/v1/postcode', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -176,7 +176,7 @@ router.delete('/api/v1/postcode/:id', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 

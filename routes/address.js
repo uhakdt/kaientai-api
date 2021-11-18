@@ -21,7 +21,7 @@ router.get('/api/v1/addresses', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -46,7 +46,7 @@ router.get('/api/v1/address/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -105,7 +105,7 @@ router.put('/api/v1/address', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
@@ -133,7 +133,7 @@ router.delete('/api/v1/address/:id', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 });
 
