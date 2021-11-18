@@ -74,3 +74,33 @@ export function SendEmailToSupplier (dataMain) {
   });
 
 }
+
+export function SendEmailToKaientaiOrderUpdate (dataMain) {
+  const mailOptionsToTeam = {
+    from: process.env.GMAIL,
+    to: 'uhakdt@gmail.com, mierdluffy@gmail.com',
+    subject: 'KLF Order Update! 🙄',
+    text: `Order Details:\n
+  
+    Order ID: ${dataMain.orderID}\n
+    User ID: ${dataMain.intUserID}\n
+    Supplier ID: ${dataMain.supplierID}\n
+    Date & Time: ${dataMain.dateAndTime}\n
+    Total Price: ${dataMain.totalAmount}\n
+    Name: ${dataMain.name}\n
+    Email: ${dataMain.email}\n
+    Phone Number: ${dataMain.phone}\n
+    Address1: ${dataMain.address1}\n
+    Postcode: ${dataMain.postcode}\n
+    City: ${dataMain.city}\n
+    Country: ${dataMain.country}\n
+    `
+  };
+  transporter.sendMail(mailOptionsToTeam, function(error, info) {
+    if(error){
+      console.log(error);
+    } else {
+      console.log('Email has been sent to Team!');
+    }
+  });
+}
