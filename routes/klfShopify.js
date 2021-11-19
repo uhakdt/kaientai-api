@@ -30,7 +30,7 @@ router.post('/api/v1/klf/shopify/:supplierID', async (req, res) => {
   try {
     // Variable declarations
     const listOfOrderProducts = productFormatOrderProducts(req.body.data.line_items);
-    let dataMain = klfDataMainDecleration(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null);
+    let dataMain = klfDataMainDecleration(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
 
     const postcodeCheckReqOptsRes = postcodeCheckReqOpts(dataMain);
     const addressAddReqOptsRes = addressAddReqOpts(dataMain);
@@ -155,7 +155,7 @@ router.put('/api/v1/klf/shopify/:supplierID/:orderID', async (req, res) => {
   try {
     // Variable declarations
     const listOfOrderProducts = productFormatOrderProducts(req.body.data.line_items);
-    let dataMain = klfDataMainDecleration(req.body.data, listOfOrderProducts, req.params.supplierID, "update", req.params.orderID);
+    let dataMain = klfDataMainDecleration(req.body.data, listOfOrderProducts, req.params.supplierID, "update", req.params.orderID, "In Progress");
 
     const orderUpdateReqOptsRes = orderUpdateReqOpts(dataMain);
     const productUpdateStockReqOptsRes = productUpdateStockReqOpts(dataMain);
@@ -204,6 +204,59 @@ let CheckOrderFulfilmentUpdate = async (orderUpdateReqOptsRes, productUpdateStoc
       })
       console.log("Order cannot be fulfiled.")
     }
+  })
+}
+
+// ORDER CANCELLED
+router.put('/api/v1/klf/shopify/cancellation/:supplierID/:orderID', async (req, res) => {
+  try {
+    // Variable declarations
+    const listOfOrderProducts = productFormatOrderProducts(req.body.data.line_items);
+    let dataMain = klfDataMainDecleration(req.body.data, listOfOrderProducts, req.params.supplierID, "cancelled", req.params.orderID, "Cancelled");
+
+    const orderUpdateReqOptsRes = orderUpdateReqOpts(dataMain);
+    const productUpdateStockReqOptsRes = productUpdateStockReqOpts(dataMain);
+
+    orderFulfillmentCancelled(orderUpdateReqOptsRes, productUpdateStockReqOptsRes, dataMain, res);
+
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+let orderFulfillmentCancelled = async (orderUpdateReqOptsRes, productUpdateStockReqOptsRes, dataMain, res) => {
+  request(productGetReqOptsRes, (error, resGetProducts, body) => {
+    let listOfProduct = JSON.parse(body);
+    listOfProduct = listOfProduct.data.products;
+
+    // UPDATING ORDER
+    request(orderUpdateReqOptsRes, (error, resUpdateOrder, body) => {
+      dataMain.orderID = resUpdateOrder.body.data.order.id;
+
+      //ITERATE OVER ORDER ITEMS
+      for (let i = 0; i < dataMain.orderProducts.length; i++) {
+        const orderItem = dataMain.orderProducts[i];
+
+        // ITERATE OVER STOCK ITEMS
+        for (let i = 0; i < listOfProduct.length; i++) {
+          const stockItem = listOfProduct[i];
+
+          // UPDATE STOCK = STOCK + ORDER
+          productUpdateStockReqOptsRes.json.id = stockItem.id
+          productUpdateStockReqOptsRes.json.stock = stockItem.stock + orderItem.quantity;
+          if(orderItem.title.toLowerCase() === stockItem.title.toLowerCase()){
+            console.log("Updating stock")
+            request(productUpdateStockReqOptsRes, (error, resUpdateStock, body) => {
+            })
+          }
+        }
+      }
+      email.SendEmailToKaientaiOrderCancelled(dataMain);
+      email.SendEmailToSupplierOrderCancelled(dataMain);
+      res.status(200).json({
+        status: "OK."
+      })
+    })
   })
 }
 

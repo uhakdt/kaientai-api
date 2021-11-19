@@ -1,6 +1,6 @@
 import { GetDateAndTimeNow } from './dateAndTimeNow';
 
-export function klfDataMainDecleration (dataBody, listOfOrderProducts, supplierID, type, orderID) {
+export function klfDataMainDecleration (dataBody, listOfOrderProducts, supplierID, type, orderID, orderStatus) {
   let res = {
     orderID: type === "add" ? null : orderID,
     name: dataBody.customer.first_name + " " + dataBody.customer.last_name,
@@ -20,7 +20,8 @@ export function klfDataMainDecleration (dataBody, listOfOrderProducts, supplierI
     supplierID: supplierID,
     supplierContactName: dataBody.supplierContactName,
     supplierContactEmail: dataBody.supplierContactEmail,
-    dateAndTime: GetDateAndTimeNow()
+    dateAndTime: GetDateAndTimeNow(),
+    status: orderStatus
   }
   return res;
 }

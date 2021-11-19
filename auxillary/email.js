@@ -13,20 +13,20 @@ export function SendEmailToKaientai (dataMain) {
     from: process.env.GMAIL,
     to: 'uhakdt@gmail.com, mierdluffy@gmail.com',
     subject: 'KLF New Order! 😜',
-    text: `Order Details:\n
+    text: `Order Details:
   
-    Order ID: ${dataMain.orderID}\n
-    User ID: ${dataMain.intUserID}\n
-    Supplier ID: ${dataMain.supplierID}\n
-    Date & Time: ${dataMain.dateAndTime}\n
-    Total Price: ${dataMain.totalAmount}\n
-    Name: ${dataMain.name}\n
-    Email: ${dataMain.email}\n
-    Phone Number: ${dataMain.phone}\n
-    Address1: ${dataMain.address1}\n
-    Postcode: ${dataMain.postcode}\n
-    City: ${dataMain.city}\n
-    Country: ${dataMain.country}\n
+    Order ID: ${dataMain.orderID}
+    User ID: ${dataMain.intUserID}
+    Supplier ID: ${dataMain.supplierID}
+    Date & Time: ${dataMain.dateAndTime}
+    Total Price: ${dataMain.totalAmount}
+    Name: ${dataMain.name}
+    Email: ${dataMain.email}
+    Phone Number: ${dataMain.phone}
+    Address1: ${dataMain.address1}
+    Postcode: ${dataMain.postcode}
+    City: ${dataMain.city}
+    Country: ${dataMain.country}
     `
   };
   transporter.sendMail(mailOptionsToTeam, function(error, info) {
@@ -43,25 +43,25 @@ export function SendEmailToSupplier (dataMain) {
     from: process.env.GMAIL,
     to: `${dataMain.supplierContactEmail}`,
     subject: 'New Order: Kaientai local Fulfilment conditions met',
-    text: `Hi ${dataMain.supplierContactName},\n
+    text: `Hi ${dataMain.supplierContactName},
     
-    You have received an order from your website. The order can be fulfiled by us and so we are now verifying this and will send you an email upon verification. The order details are:\n
+    You have received an order from your website. The order can be fulfiled by us and so we are now verifying this and will send you an email upon verification. The order details are:
 
-    OrderID: ${dataMain.orderID}\n
-    UserID: ${dataMain.extUserID}\n
-    Date & Time: ${dataMain.dateAndTime}\n
-    Total Price: ${dataMain.totalAmount}\n
-    Name: ${dataMain.name}\n
-    Email: ${dataMain.email}\n
-    Phone Number: ${dataMain.phone}\n
-    Address1: ${dataMain.address1}\n
-    Postcode: ${dataMain.postcode}\n
-    City: ${dataMain.city}\n
-    Country: ${dataMain.country}\n
+    OrderID: ${dataMain.orderID}
+    UserID: ${dataMain.extUserID}
+    Date & Time: ${dataMain.dateAndTime}
+    Total Price: ${dataMain.totalAmount}
+    Name: ${dataMain.name}
+    Email: ${dataMain.email}
+    Phone Number: ${dataMain.phone}
+    Address1: ${dataMain.address1}
+    Postcode: ${dataMain.postcode}
+    City: ${dataMain.city}
+    Country: ${dataMain.country}
 
-    Thank you!!\n
+    Thank you!!
     
-    Kindest Regards,\n
+    Kindest Regards,
     Mier at Kaientai`
   };
   
@@ -80,20 +80,20 @@ export function SendEmailToKaientaiOrderUpdate (dataMain) {
     from: process.env.GMAIL,
     to: 'uhakdt@gmail.com, mierdluffy@gmail.com',
     subject: 'KLF Order Update! 🙄',
-    text: `Order Details:\n
+    text: `Order Details:
   
-    Order ID: ${dataMain.orderID}\n
-    User ID: ${dataMain.intUserID}\n
-    Supplier ID: ${dataMain.supplierID}\n
-    Date & Time: ${dataMain.dateAndTime}\n
-    Total Price: ${dataMain.totalAmount}\n
-    Name: ${dataMain.name}\n
-    Email: ${dataMain.email}\n
-    Phone Number: ${dataMain.phone}\n
-    Address1: ${dataMain.address1}\n
-    Postcode: ${dataMain.postcode}\n
-    City: ${dataMain.city}\n
-    Country: ${dataMain.country}\n
+    Order ID: ${dataMain.orderID}
+    User ID: ${dataMain.intUserID}
+    Supplier ID: ${dataMain.supplierID}
+    Date & Time: ${dataMain.dateAndTime}
+    Total Price: ${dataMain.totalAmount}
+    Name: ${dataMain.name}
+    Email: ${dataMain.email}
+    Phone Number: ${dataMain.phone}
+    Address1: ${dataMain.address1}
+    Postcode: ${dataMain.postcode}
+    City: ${dataMain.city}
+    Country: ${dataMain.country}
     `
   };
   transporter.sendMail(mailOptionsToTeam, function(error, info) {
@@ -103,4 +103,71 @@ export function SendEmailToKaientaiOrderUpdate (dataMain) {
       console.log('Email has been sent to Team!');
     }
   });
+}
+
+export function SendEmailToKaientaiOrderCancelled (dataMain) {
+  const mailOptionsToTeam = {
+    from: process.env.GMAIL,
+    to: 'uhakdt@gmail.com, mierdluffy@gmail.com',
+    subject: 'KLF Cancelled Order! 🤬',
+    text: `Order Details:
+  
+    Order ID: ${dataMain.orderID}
+    User ID: ${dataMain.intUserID}
+    Supplier ID: ${dataMain.supplierID}
+    Date & Time: ${dataMain.dateAndTime}
+    Total Price: ${dataMain.totalAmount}
+    Name: ${dataMain.name}
+    Email: ${dataMain.email}
+    Phone Number: ${dataMain.phone}
+    Address1: ${dataMain.address1}
+    Postcode: ${dataMain.postcode}
+    City: ${dataMain.city}
+    Country: ${dataMain.country}
+    `
+  };
+  transporter.sendMail(mailOptionsToTeam, function(error, info) {
+    if(error){
+      console.log(error);
+    } else {
+      console.log('Email has been sent to Team!');
+    }
+  });
+}
+
+export function SendEmailToSupplierOrderCancelled (dataMain) {
+  const mailOptionsToSupplier = {
+    from: process.env.GMAIL,
+    to: `${dataMain.supplierContactEmail}`,
+    subject: 'Kaientai local Fulfilment: Cancelled Order',
+    text: `Hi ${dataMain.supplierContactName},
+    
+    The order below has been cancelled and we are now aware of this and will give you a verification upon confirmation of the cancellation:
+
+    OrderID: ${dataMain.orderID}
+    UserID: ${dataMain.extUserID}
+    Date & Time: ${dataMain.dateAndTime}
+    Total Price: ${dataMain.totalAmount}
+    Name: ${dataMain.name}
+    Email: ${dataMain.email}
+    Phone Number: ${dataMain.phone}
+    Address1: ${dataMain.address1}
+    Postcode: ${dataMain.postcode}
+    City: ${dataMain.city}
+    Country: ${dataMain.country}
+
+    Thank you!!
+    
+    Kindest Regards,
+    Mier at Kaientai`
+  };
+  
+  transporter.sendMail(mailOptionsToSupplier, function(error, info) {
+    if(error){
+      console.log(error);
+    } else {
+      console.log(`Email has been sent to ${dataMain.supplierContactName}!`);
+    }
+  });
+
 }

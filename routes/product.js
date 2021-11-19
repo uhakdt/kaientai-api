@@ -6,7 +6,7 @@ const router = express.Router();
 // GET PRODUCTS
 router.get('/api/v1/products', async (req, res) => {
   try {
-    const results = await db.query(`SELECT * FROM public."Product" WHERE stock != 0 and active = true order by price asc;`)
+    const results = await db.query(`SELECT * FROM public."Product" WHERE stock != 0;`)
     
     if (results.rowCount > 0) {
       res.status(200).json({

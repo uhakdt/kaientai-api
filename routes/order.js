@@ -187,7 +187,7 @@ router.post('/api/v1/order', async (req, res) => {
 router.put('/api/v1/order', async (req, res) => {
   try {
     const resultUpdateOrder = await db.query(
-      'UPDATE public."Order" SET "dateAndTime"=$2, "statusID"=$3, "supplierID"=$4, "userID"=$5, "totalAmount"=$6, "contactName"=$7, "contactEmail"=$8, "contactPhone"=$9, address1=$10, address2=$11, city=$12, county=$13, country=$14, postcode=$15, "offerID"=$16, "extOrderID"=$17 WHERE id = $1 returning *',[
+      'UPDATE public."Order" SET "dateAndTime"=$2, "statusID"=$3, "supplierID"=$4, "userID"=$5, "totalAmount"=$6, "contactName"=$7, "contactEmail"=$8, "contactPhone"=$9, address1=$10, address2=$11, city=$12, county=$13, country=$14, postcode=$15, "offerID"=$16, "extOrderID"=$17, status=$18 WHERE id = $1 returning *',[
       req.body.id,
       req.body.dateAndTime,
       req.body.statusID,
@@ -204,7 +204,8 @@ router.put('/api/v1/order', async (req, res) => {
       req.body.country,
       req.body.postcode,
       req.body.offerID,
-      req.body.extOrderID
+      req.body.extOrderID,
+      req.body.status
     ])
     if (resultUpdateOrder.rowCount > 0) {
       // Check if order Product exists

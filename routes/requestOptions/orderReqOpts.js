@@ -29,7 +29,8 @@ export function orderAddReqOpts (dataMain) {
       "postcode": dataMain.postcode,
       "offerID": null,
       "extOrderID": dataMain.extOrderID,
-      "cartProducts": dataMain.orderProducts
+      "cartProducts": dataMain.orderProducts,
+      "status": dataMain.status
     },
   };
   return res;
@@ -57,7 +58,8 @@ export function orderUpdateReqOpts (dataMain) {
       "postcode": dataMain.postcode,
       "offerID": null,
       "extOrderID": dataMain.extOrderID,
-      "cartProducts": dataMain.orderProducts
+      "cartProducts": dataMain.orderProducts,
+      "status": dataMain.status
     },
   };
   return res;
