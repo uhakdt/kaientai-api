@@ -1,10 +1,25 @@
-export function productFormatOrderProducts (orderProducts) {
+export function productFormatOrderProductsShopify (orderProducts) {
   // Variable declarations
   let listOfOrderProducts = []
   for (let i = 0; i < orderProducts.length; i++) {
     const e = orderProducts[i];
     let orderProduct = {
       title: e.variant_title === "" || e.variant_title === null ? e.title: e.title + " - " + e.variant_title,
+      price: e.price,
+      imageUrl: null,
+      quantity: e.quantity,
+    }
+    listOfOrderProducts.push(orderProduct);
+  }
+  return listOfOrderProducts;
+}
+
+export function productFormatOrderProductsShopifyWooCommerce (orderProducts) {
+  let listOfOrderProducts = []
+  for (let i = 0; i < orderProducts.length; i++) {
+    const e = orderProducts[i];
+    let orderProduct = {
+      title: e.name,
       price: e.price,
       imageUrl: null,
       quantity: e.quantity,

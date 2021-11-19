@@ -13,8 +13,8 @@ import { addressAddReqOpts } from './requestOptions/addressReqOpts.js';
 import { orderAddReqOpts, orderUpdateReqOpts } from './requestOptions/orderReqOpts.js';
 import { orderCheckExtExistsReqOpts } from './requestOptions/orderReqOpts.js';
 
-import { productCheckIfEnoughStock, productFormatOrderProducts } from '../auxillary/product.js';
-import { klfDataMainDecleration } from '../auxillary/dataDeclaration.js';
+import { productCheckIfEnoughStock, productFormatOrderProductsShopify } from '../auxillary/product.js';
+import { klfDataMainDeclerationShopify } from '../auxillary/dataDeclaration.js';
 
 
 let currentURL = process.env.URL_PROD;
@@ -29,8 +29,8 @@ const productGetReqOptsRes = productGetReqOpts()
 router.post('/api/v1/klf/shopify/:supplierID', async (req, res) => {
   try {
     // Variable declarations
-    const listOfOrderProducts = productFormatOrderProducts(req.body.data.line_items);
-    let dataMain = klfDataMainDecleration(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
+    const listOfOrderProducts = productFormatOrderProductsShopify(req.body.data.line_items);
+    let dataMain = klfDataMainDeclerationShopify(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
 
     const postcodeCheckReqOptsRes = postcodeCheckReqOpts(dataMain);
     const addressAddReqOptsRes = addressAddReqOpts(dataMain);
@@ -154,8 +154,8 @@ let CheckOrderFulfilment = async (orderCheckExtExistsReqOptsRes, orderAddReqOpts
 router.put('/api/v1/klf/shopify/:supplierID/:orderID', async (req, res) => {
   try {
     // Variable declarations
-    const listOfOrderProducts = productFormatOrderProducts(req.body.data.line_items);
-    let dataMain = klfDataMainDecleration(req.body.data, listOfOrderProducts, req.params.supplierID, "update", req.params.orderID, "In Progress");
+    const listOfOrderProducts = productFormatOrderProductsShopify(req.body.data.line_items);
+    let dataMain = klfDataMainDeclerationShopify(req.body.data, listOfOrderProducts, req.params.supplierID, "update", req.params.orderID, "In Progress");
 
     const orderUpdateReqOptsRes = orderUpdateReqOpts(dataMain);
     const productUpdateStockReqOptsRes = productUpdateStockReqOpts(dataMain);
@@ -211,8 +211,8 @@ let CheckOrderFulfilmentUpdate = async (orderUpdateReqOptsRes, productUpdateStoc
 router.put('/api/v1/klf/shopify/cancellation/:supplierID/:orderID', async (req, res) => {
   try {
     // Variable declarations
-    const listOfOrderProducts = productFormatOrderProducts(req.body.data.line_items);
-    let dataMain = klfDataMainDecleration(req.body.data, listOfOrderProducts, req.params.supplierID, "cancelled", req.params.orderID, "Cancelled");
+    const listOfOrderProducts = productFormatOrderProductsShopify(req.body.data.line_items);
+    let dataMain = klfDataMainDeclerationShopify(req.body.data, listOfOrderProducts, req.params.supplierID, "cancelled", req.params.orderID, "Cancelled");
 
     const orderUpdateReqOptsRes = orderUpdateReqOpts(dataMain);
     const productUpdateStockReqOptsRes = productUpdateStockReqOpts(dataMain);
