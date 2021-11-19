@@ -1,7 +1,6 @@
 import express from 'express';
 import request from 'request';
 import * as email from '../auxillary/email.js';
-import { GetDateAndTimeNow } from '../auxillary/dateAndTimeNow';
 
 const router = express.Router();
 
@@ -89,7 +88,6 @@ router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
     console.log(error);
   }
 })
-
 
 let CheckOrderFulfilment = async (orderCheckExtExistsReqOptsRes, orderAddReqOptsRes, productUpdateStockReqOptsRes, dataMain, res) =>  {
   // GET List of Products
