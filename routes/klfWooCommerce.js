@@ -28,10 +28,9 @@ const productGetReqOptsRes = productGetReqOpts()
 // ORDER CREATE
 router.post('/api/v1/klf/woocommerce/:supplierID', async (req, res) => {
   try {
-    console.log(req.body)
     // Variable declarations
     const listOfOrderProducts = productFormatOrderProductsShopifyWooCommerce(req.body.dataBody.line_items);
-    let dataMain = klfDataMainDeclerationWooCommerce(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
+    let dataMain = klfDataMainDeclerationWooCommerce(req.body, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
 
     const postcodeCheckReqOptsRes = postcodeCheckReqOpts(dataMain);
     const addressAddReqOptsRes = addressAddReqOpts(dataMain);
