@@ -1,4 +1,4 @@
-let currentURL = process.env.URL;
+let currentURL = process.env.URL_PROD;
 
 export function postcodeCheckReqOpts (dataMain) {
   console.log(currentURL)

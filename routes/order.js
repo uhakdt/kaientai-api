@@ -4,7 +4,7 @@ import request from 'request';
 
 const router = express.Router();
 
-let currentURL = process.env.URL;
+let currentURL = process.env.URL_PROD;
 
 const reqOptDeleteOrderProducts = {
   url: `${currentURL}/api/v1/orderProducts/`,

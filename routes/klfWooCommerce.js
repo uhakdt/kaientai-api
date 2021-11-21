@@ -16,7 +16,7 @@ import { orderCheckExtExistsReqOpts } from './requestOptions/orderReqOpts.js';
 import { productCheckIfEnoughStock, productFormatOrderProductsShopifyWooCommerce } from '../auxillary/product.js';
 import { klfDataMainDeclerationWooCommerce } from '../auxillary/dataDeclaration.js';
 
-let currentURL = process.env.URL;
+let currentURL = process.env.URL_PROD;
 
 if(process.env.NODE_ENV === 'Development') {
   currentURL = process.env.URL_DEV
