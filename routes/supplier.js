@@ -73,6 +73,30 @@ router.post('/api/v1/supplier/:supplierEmail', async (req, res) => {
   }
 });
 
+// GET SUPPLIER ID BY DOMAIN
+router.get('/api/v1/supplier/idPerDomain/:domain', async (req, res) => {
+  try {
+    const result = await db.query(`SELECT * FROM public."Supplier" WHERE domain=$1;`, [
+      req.params.domain
+    ])
+
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          supplierID: result.rows[0].id
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "ID did not match."
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // CHECK EXT SUPPLIER EXISTS
 router.get('/api/v1/supplier/checkExtExists/:platform/:extID', async (req, res) => {
   try {

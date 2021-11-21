@@ -36,7 +36,7 @@ router.get('/api/v1/orders', async (req, res) => {
 // GET ORDERS BY SUPPLIERID
 router.get('/api/v1/orders/perSupplier/:supplierID', async (req, res) => {
   try {
-    const results = await db.query('SELECT * FROM public."Order" WHERE "supplierID"=$1;', [
+    const results = await db.query('SELECT * FROM public."Order" WHERE "supplierID"=$1 order by id desc;', [
       req.params.supplierID
     ])
 
@@ -76,6 +76,41 @@ router.get('/api/v1/orders/perUserEmail/:email', async (req, res) => {
         status: "No Results."
       });
     }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// GET ORDERS BY SUPPLIER DOMAIN
+router.get('/api/v1/orders/perSupplierDomain/:domain', async (req, res) => {
+  try {
+    const supplierResult = await db.query(`SELECT * FROM public."Supplier" WHERE domain=$1;`, [
+      req.params.domain
+    ])
+    console.log("1")
+    if(supplierResult.rowCount > 0) {
+      const results = await db.query('SELECT * FROM public."Order" WHERE "supplierID"=$1;', [
+        supplierResult.rows[0].id
+      ])
+      console.log("2")
+      if (results.rowCount > 0) {
+        res.status(200).json({
+          status: "OK",
+          data: {
+            orders: results.rows
+          }
+        });
+      } else {
+        res.status(204).json({
+          status: "No Results."
+        });
+      }
+    } else {
+      res.status(204).json({
+        status: "No Results found with that domain."
+      });
+    }
+
   } catch (error) {
     console.log(error);
   }
