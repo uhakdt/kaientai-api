@@ -20,6 +20,7 @@ import address from './routes/address.js';
 import user from './routes/user.js';
 import postcode from './routes/postcode.js';
 import supplier from './routes/supplier.js';
+import gdpr from './routes/gdpr.js';
 
 app.use(klfWooCommerce);
 app.use(klfShopify);
@@ -30,5 +31,6 @@ app.use(address);
 app.use(user);
 app.use(postcode);
 app.use(supplier);
+app.use(gdpr);
 
 export default app;
