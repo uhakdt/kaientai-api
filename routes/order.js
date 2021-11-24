@@ -91,12 +91,10 @@ router.get('/api/v1/orders/perSupplierDomain/:domain', async (req, res) => {
     const supplierResult = await db.query(`SELECT * FROM public."Supplier" WHERE domain=$1;`, [
       req.params.domain
     ])
-    console.log("1")
     if(supplierResult.rowCount > 0) {
       const results = await db.query('SELECT * FROM public."Order" WHERE "supplierID"=$1;', [
         supplierResult.rows[0].id
       ])
-      console.log("2")
       if (results.rowCount > 0) {
         res.status(200).json({
           status: "OK",

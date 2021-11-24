@@ -47,8 +47,7 @@ export function SendEmailToSupplier (dataMain) {
     
     You have received an order from your website. The order can be fulfiled by us and so we are now verifying this and will send you an email upon verification. The order details are:
 
-    OrderID: ${dataMain.orderID}
-    UserID: ${dataMain.extUserID}
+    OrderID: ${dataMain.extOrderID}
     Date & Time: ${dataMain.dateAndTime}
     Total Price: ${dataMain.totalAmount}
     Name: ${dataMain.name}

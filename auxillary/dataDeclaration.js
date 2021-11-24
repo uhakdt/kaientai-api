@@ -27,7 +27,6 @@ export function klfDataMainDeclerationShopify (dataBody, listOfOrderProducts, su
 }
 
 export function klfDataMainDeclerationWooCommerce (dataBody, listOfOrderProducts, supplierID, type, orderID, orderStatus) {
-  console.log(dataBody.shipping)
   let res = {
     orderID: type === "add" ? null : orderID,
     name: dataBody.shipping.first_name + " " + dataBody.shipping.last_name,
@@ -46,7 +45,7 @@ export function klfDataMainDeclerationWooCommerce (dataBody, listOfOrderProducts
     extOrderID: dataBody.id,
     supplierID: supplierID,
     supplierContactName: dataBody.supplierContactName,
-    supplierContactEmail: "mierdluffy@gmail.com",
+    supplierContactEmail: dataBody.supplierContactEmail,
     dateAndTime: GetDateAndTimeNow(),
     status: orderStatus
   }
