@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 export function SendEmailToKaientai (dataMain) {
   const mailOptionsToTeam = {
     from: process.env.GMAIL,
-    to: 'uhakdt@gmail.com, mierdluffy@gmail.com',
+    to: 'x@kaientai.co.uk, bauan@kaientai.co.uk, baban@kaientai.co.uk',
     subject: 'KLF New Order! 😜',
     text: `Order Details:
   
