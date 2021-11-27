@@ -27,6 +27,13 @@ export function klfDataMainDeclerationShopify (dataBody, listOfOrderProducts, su
 }
 
 export function klfDataMainDeclerationWooCommerce (dataBody, listOfOrderProducts, supplierID, type, orderID, orderStatus) {
+  console.log("---------------LIST OF ORDER PRODUCTS-------------")
+  console.log("--------------------------------------------------")
+  console.log(listOfOrderProducts)
+  console.log("--------------------------------------------------")
+  console.log("--------------------DATA BODY---------------------")
+  console.log(dataBody)
+  console.log("--------------------------------------------------")
   let res = {
     orderID: type === "add" ? null : orderID,
     name: dataBody.shipping.first_name + " " + dataBody.shipping.last_name,
