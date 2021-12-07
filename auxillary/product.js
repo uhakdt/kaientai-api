@@ -155,8 +155,9 @@ export async function updateOrderProductsFromOrder (orderProducts, orderID) {
           "quantity": item.quantity
         },
       };
-      request(res, (err, resp, body) => {
-        console.log(resp)
+      await request(res)
+      .catch(err => {
+        console.log(err)
       })
     };
     const updateOrderProducts = async () => {

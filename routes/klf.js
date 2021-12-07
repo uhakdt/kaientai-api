@@ -26,7 +26,7 @@ router.post('/api/v1/klf/:platform/:supplierID', async (req, res) => {
       dataMain = klfDataMainDeclerationShopify(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
     } else if(req.params.platform === "woocommerce") {
       listOfOrderProducts = productFormatOrderProductsWooCommerce(req.body.dataBody.line_items);
-      dataMain = klfDataMainDeclerationWooCommerce(req.body.dataBody, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
+      dataMain = klfDataMainDeclerationWooCommerce(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
     }
 
     // 1. Check Postcode within Area
