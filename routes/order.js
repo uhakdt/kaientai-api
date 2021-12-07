@@ -1,14 +1,12 @@
 import express from 'express';
 import db from '../db';
 import request from 'request';
+import { updateOrderProductsFromOrder } from '../auxillary/product';
+// import { orderProductsUpdate } from '../auxillary/product';
 
 const router = express.Router();
 
-let currentURL = process.env.URL_PROD;
-
-if(process.env.NODE_ENV === 'Development') {
-  currentURL = process.env.URL_DEV
-}
+let currentURL = process.env.URL;
 
 const reqOptDeleteOrderProducts = {
   url: `${currentURL}/api/v1/orderProducts/`,
@@ -169,52 +167,64 @@ router.get('/api/v1/order/ext/:id', async (req, res) => {
 // CREATE ORDER
 router.post('/api/v1/order', async (req, res) => {
   try {
-    // Create Order
-    const resultCreateOrder = await db.query(
-      'INSERT INTO public."Order"("dateAndTime", "statusID", "supplierID", "userID", "totalAmount", "contactName", "contactEmail", "contactPhone", address1, address2, city, county, country, postcode, "offerID", "extOrderID") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *', [
-      req.body.dateAndTime,
-      req.body.statusID,
-      req.body.supplierID,
-      req.body.userID,
-      req.body.totalAmount,
-      req.body.contactName,
-      req.body.contactEmail,
-      req.body.contactPhone,
-      req.body.address1,
-      req.body.address2,
-      req.body.city,
-      req.body.county,
-      req.body.country,
-      req.body.postcode,
-      req.body.offerID,
-      req.body.extOrderID
-    ])
-    if(resultCreateOrder.rowCount > 0){
-      // Create Order Products from Cart Products
-      
-      const createOrderProduct = async item => {
-        await db.query(
-          'INSERT INTO public."OrderProduct" ("orderID", title, quantity) VALUES ($1, $2, $3) returning *', [
-          resultCreateOrder.rows[0].id,
-          item.title,
-          item.quantity
-        ])
-      };
-      const getCreateOrderProductsData = async () => {
-        return Promise.all(req.body.cartProducts.map(item => createOrderProduct(item)))
-      };
-      getCreateOrderProductsData().then(data => {
-      }).catch(error => {
-        console.log(error);
-      });
+    // Check if Order by ExtOrderID already exists
+    const resultExtExists = await db.query('SELECT * FROM public."Order" WHERE "extOrderID" = $1', [req.body.extOrderID])
+    if(resultExtExists.rowCount === 0) {
 
-      res.status(201).json({
-        status: "OK",
+      // Create Order
+      const resultCreateOrder = await db.query(
+        'INSERT INTO public."Order"("dateAndTime", "supplierID", "userID", "totalAmount", "contactName", "contactEmail", "contactPhone", address1, address2, country, postcode, "extOrderID", status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning *', [
+        req.body.dateAndTime,
+        req.body.supplierID,
+        req.body.userID,
+        req.body.totalAmount,
+        req.body.contactName,
+        req.body.contactEmail,
+        req.body.contactPhone,
+        req.body.address1,
+        req.body.address2,
+        req.body.country,
+        req.body.postcode,
+        req.body.extOrderID,
+        req.body.status
+      ])
+      if(resultCreateOrder.rowCount > 0){
+
+        // Create Order Products from Order Products
+        const createOrderProduct = async item => {
+          const prodID = await db.query('SELECT id FROM public."Product" WHERE "extID"=$1', [item.extID]);
+          if(prodID.rowCount > 0) {
+            await db.query(
+              'INSERT INTO public."OrderProduct" ("orderID", "productID", quantity) VALUES ($1, $2, $3) returning *', [
+              resultCreateOrder.rows[0].id,
+              prodID.rows[0].id,
+              item.quantity
+            ])
+          }
+        };
+        const getCreateOrderProductsData = async () => {
+          return Promise.all(req.body.orderProducts.map(item => createOrderProduct(item)))
+        };
+        getCreateOrderProductsData()
+        .catch(error => {
+          console.log(error);
+        });
+  
+        res.status(201).json({
+          status: "OK",
+          data: {
+            order: resultCreateOrder.rows[0]
+          }
+        });
+      };
+    } else { 
+      res.status(403).json({
+        status: "Order already exists by checking External Order ID.",
         data: {
-          order: resultCreateOrder.rows[0]
+          order: resultExtExists.rows[0]
         }
       });
-    };
+    }
   } catch (error) {
     console.log(error);
   };
@@ -224,10 +234,9 @@ router.post('/api/v1/order', async (req, res) => {
 router.put('/api/v1/order', async (req, res) => {
   try {
     const resultUpdateOrder = await db.query(
-      'UPDATE public."Order" SET "dateAndTime"=$2, "statusID"=$3, "supplierID"=$4, "userID"=$5, "totalAmount"=$6, "contactName"=$7, "contactEmail"=$8, "contactPhone"=$9, address1=$10, address2=$11, city=$12, county=$13, country=$14, postcode=$15, "offerID"=$16, "extOrderID"=$17, status=$18 WHERE id = $1 returning *',[
+      'UPDATE public."Order" SET "dateAndTime"=$2, "supplierID"=$3, "userID"=$4, "totalAmount"=$5, "contactName"=$6, "contactEmail"=$7, "contactPhone"=$8, address1=$9, address2=$10, country=$11, postcode=$12, "extOrderID"=$13, status=$14 WHERE id = $1 returning *',[
       req.body.id,
       req.body.dateAndTime,
-      req.body.statusID,
       req.body.supplierID,
       req.body.userID,
       req.body.totalAmount,
@@ -236,55 +245,42 @@ router.put('/api/v1/order', async (req, res) => {
       req.body.contactPhone,
       req.body.address1,
       req.body.address2,
-      req.body.city,
-      req.body.county,
       req.body.country,
       req.body.postcode,
-      req.body.offerID,
       req.body.extOrderID,
       req.body.status
     ])
     if (resultUpdateOrder.rowCount > 0) {
-      // Check if order Product exists
-      const updateOrderProduct = async (item, orderProductID) => {
-        await db.query(
-          'UPDATE public."OrderProduct" SET title=$2, quantity=$3	WHERE id=$1 returning *', [
-          orderProductID,
-          item.title,
-          item.quantity,
-        ])
-      };
+      // Check if length of order products has changed
+      // Another variable also returns = if more, less or same number of OrderProducts
+      await updateOrderProductsFromOrder(req.body.orderProducts, req.body.id);
 
-      const createOrderProduct = async item => {
-        await db.query(
-          'INSERT INTO public."OrderProduct" ("orderID", title, quantity) VALUES ($1, $2, $3) returning *', [
-          resultUpdateOrder.rows[0].id,
-          item.title,
-          item.quantity
-        ])
-      };
+      // If more now => add new
+      // else if (oldOrderProductsNum < newOrderProductsNum) {
+      //   const orderProductIDsToAdd = newOrderProductsIDsList.filter(x => !oldOrderProductsIDsList.includes(x))
 
-      const checkIfOrderProductExists = async item => {
-        const tempOrderProductExistsResult = await db.query(
-          'SELECT id, "orderID", title, quantity FROM public."OrderProduct" WHERE "orderID" = $1 and title = $2;', [
-          resultUpdateOrder.rows[0].id,
-          item.title
-        ])
-  
-        if(tempOrderProductExistsResult.rowCount > 0) {
-          updateOrderProduct(item, tempOrderProductExistsResult.rows[0].id);
-        } else {
-          createOrderProduct(item);
-        }
-      }
+      //   const res = {
+      //     url: `${currentURL}/api/v1/orderProduct`,
+      //     method: 'POST',
+      //     json: {
+      //       "orderID": req.body.id,
+      //       "productID": ,
+      //       "quantity": 1
+      //     },
+      //   };
+      // }
 
-      const getCreateOrderProductsData = async () => {
-        return Promise.all(req.body.cartProducts.map(item => checkIfOrderProductExists(item)))
-      };
-      getCreateOrderProductsData().then(data => {
-      }).catch(error => {
-        console.log(error);
-      });
+      // Update existing order products
+
+      // Update Order Products
+      // const orderProductsResult = await orderProductsUpdate(req.body.orderProducts)
+      // console.log(orderProductsResult);
+      // Check if any Order Products have been deleted
+
+
+     
+
+
 
 
       

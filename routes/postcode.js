@@ -29,9 +29,7 @@ router.get('/api/v1/postcodes', async (req, res) => {
 // GET POSTCODE
 router.get('/api/v1/postcode/:id', async (req, res) => {
   try {
-    const result = await db.query(`SELECT * FROM public."Postcode" WHERE id=$1;`, [
-      req.params.id
-    ])
+    const result = await db.query(`SELECT * FROM public."Postcode" WHERE id=$1;`, [req.params.id])
 
     if (result.rowCount > 0) {
       res.status(200).json({

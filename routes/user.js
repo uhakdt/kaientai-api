@@ -73,8 +73,8 @@ router.get('/api/v1/user/email/:email', async (req, res) => {
   }
 });
 
-// GET USER ID BY EMAIL
-router.post('/api/v1/user/:email', async (req, res) => {
+// GET USERID BY EMAIL
+router.get('/api/v1/userID/email/:email', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT id FROM public."User" WHERE email = $1;', [
@@ -89,31 +89,7 @@ router.post('/api/v1/user/:email', async (req, res) => {
       })
     } else {
       res.status(204).json({
-        status: "Email did not match.",
-      })
-    }
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-// GET USER BY EXTUSERID
-router.post('/api/v1/user/ext/:extUserID', async (req, res) => {
-  try {
-    const result = await db.query(
-      'SELECT * FROM public."User" WHERE "extUserID" = $1;', [
-      req.params.extUserID
-    ])
-    if(result.rowCount > 0){
-      res.status(200).json({
-        status: "OK",
-        data: {
-          user: result.rows[0]
-        }
-      })
-    } else {
-      res.status(204).json({
-        status: "ID did not match."
+        status: "ID did not match.",
       })
     }
   } catch (error) {
@@ -129,17 +105,27 @@ router.post('/api/v1/user', async (req, res) => {
       req.body.email
     ])
 
-    if(existingUser.rowCount === 0){
+    if(existingUser.rowCount > 0){
+      res.status(422).json({
+        status: "User already exists.",
+        data: {
+          user: existingUser.rows[0] 
+        }
+      })
+    } else {
       const result = await db.query(
-        'INSERT INTO public."User"(name, email, phone, "loginDetailID", "addressID", "dateAndTimeSignUp", "profileImageUrl", "extUserID") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) returning *', [
+        'INSERT INTO public."User"(name, email, phone, "dateAndTimeSignUp", "extUserID", "isAdmin", "supplierID", address1, address2, country, postcode) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning *', [
         req.body.name,
         req.body.email,
         req.body.phone,
-        req.body.loginDetailID,
-        req.body.addressID,
         req.body.dateAndTimeSignUp,
-        req.body.profileImageUrl,
         req.body.extUserID,
+        req.body.isAdmin,
+        req.body.supplierID,
+        req.body.address1,
+        req.body.address2,
+        req.body.country,
+        req.body.postcode
       ])
       res.status(201).json({
         status: "OK",
@@ -147,21 +133,9 @@ router.post('/api/v1/user', async (req, res) => {
           user: result.rows[0]
         }
       })
-    } else {
-      const result = await db.query(
-        'SELECT * FROM public."User" WHERE email = $1;', [
-        req.body.email
-      ])
-      res.status(422).json({
-        status: "User already exists.",
-        data: {
-          user: result.rows[0]
-        }
-      })
     }
-
-
   } catch (error) {
+    console.log("Heloooo")
     console.log(error);
   }
 });
@@ -170,16 +144,19 @@ router.post('/api/v1/user', async (req, res) => {
 router.put('/api/v1/user', async (req, res) => {
   try {
     const result = await db.query(
-      'UPDATE public."User" SET name=$2, email=$3, phone=$4, "loginDetailID"=$5, "addressID"=$6, "dateAndTimeSignUp"=$7, "profileImageUrl"=$8, "extUserID"=$9 WHERE id = $1 returning *',[
+      'UPDATE public."User" SET name=$2, email=$3, phone=$4, "dateAndTimeSignUp"=$5, "extUserID"=$6, "isAdmin"=$7, "supplierID"=$8, address1=$9, address2=$10, country=$11, postcode=$12 WHERE id = $1 returning *',[
       req.body.id,
       req.body.name,
       req.body.email,
       req.body.phone,
-      req.body.loginDetailID,
-      req.body.addressID,
       req.body.dateAndTimeSignUp,
-      req.body.profileImageUrl,
-      req.body.extUserID
+      req.body.extUserID,
+      req.body.isAdmin,
+      req.body.supplierID,
+      req.body.address1,
+      req.body.address2,
+      req.body.country,
+      req.body.postcode
     ])
     if (result.rowCount > 0) {
       res.status(200).json({

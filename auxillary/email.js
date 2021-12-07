@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 export function SendEmailToKaientai (dataMain) {
   const mailOptionsToTeam = {
     from: process.env.GMAIL,
-    to: 'x@kaientai.co.uk, bauan@kaientai.co.uk, baban@kaientai.co.uk',
+    to: 'x@kaientai.co.uk',
     subject: 'KLF New Order! 😜',
     text: `Order Details:
   
@@ -25,7 +25,6 @@ export function SendEmailToKaientai (dataMain) {
     Phone Number: ${dataMain.phone}
     Address1: ${dataMain.address1}
     Postcode: ${dataMain.postcode}
-    City: ${dataMain.city}
     Country: ${dataMain.country}
     `
   };
@@ -55,7 +54,6 @@ export function SendEmailToSupplier (dataMain) {
     Phone Number: ${dataMain.phone}
     Address1: ${dataMain.address1}
     Postcode: ${dataMain.postcode}
-    City: ${dataMain.city}
     Country: ${dataMain.country}
 
     Thank you!!
@@ -91,7 +89,6 @@ export function SendEmailToKaientaiOrderUpdate (dataMain) {
     Phone Number: ${dataMain.phone}
     Address1: ${dataMain.address1}
     Postcode: ${dataMain.postcode}
-    City: ${dataMain.city}
     Country: ${dataMain.country}
     `
   };
@@ -121,7 +118,6 @@ export function SendEmailToKaientaiOrderCancelled (dataMain) {
     Phone Number: ${dataMain.phone}
     Address1: ${dataMain.address1}
     Postcode: ${dataMain.postcode}
-    City: ${dataMain.city}
     Country: ${dataMain.country}
     `
   };
@@ -152,7 +148,6 @@ export function SendEmailToSupplierOrderCancelled (dataMain) {
     Phone Number: ${dataMain.phone}
     Address1: ${dataMain.address1}
     Postcode: ${dataMain.postcode}
-    City: ${dataMain.city}
     Country: ${dataMain.country}
 
     Thank you!!

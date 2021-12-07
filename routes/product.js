@@ -6,7 +6,7 @@ const router = express.Router();
 // GET PRODUCTS
 router.get('/api/v1/products', async (req, res) => {
   try {
-    const results = await db.query(`SELECT * FROM public."Product" WHERE stock != 0;`)
+    const results = await db.query(`SELECT * FROM public."Product";`)
     
     if (results.rowCount > 0) {
       res.status(200).json({
@@ -25,34 +25,10 @@ router.get('/api/v1/products', async (req, res) => {
   }
 });
 
-// GET ALL PRODUCTS
-router.get('/api/v1/products/all', async (req, res) => {
+// GET PRODUCTS IN STOCK
+router.get('/api/v1/products/inStock', async (req, res) => {
   try {
     const results = await db.query(`SELECT * FROM public."Product" WHERE stock != 0;`)
-    
-    if (results.rowCount > 0) {
-      res.status(200).json({
-        status: "OK",
-        data: {
-          products: results.rows
-        }
-      });
-    } else {
-      res.status(204).json({
-        status: "No Results."
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-// GET PRODUCTS BY CATEGORY
-router.get('/api/v1/products/:categoryName', async (req, res) => {
-  try {
-    const results = await db.query(`SELECT * FROM public."Product" WHERE $1 = ANY(categories) and stock != 0 and active = true order by price asc;`, [
-      req.params.categoryName
-    ])
     
     if (results.rowCount > 0) {
       res.status(200).json({
@@ -98,14 +74,13 @@ router.get('/api/v1/product/:id', async (req, res) => {
 router.post('/api/v1/product', async (req, res) => {
   try {
     const result = await db.query(
-      'INSERT INTO public."Product"("supplierID", title, "imageUrl", price, stock, "extID", "weightInGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
+      'INSERT INTO public."Product"("supplierID", title, "imageUrl", price, stock, "extID") VALUES ($1, $2, $3, $4, $5, $6) returning *', [
       req.body.supplierID,
       req.body.title,
       req.body.imageUrl,
       req.body.price,
       req.body.stock,
-      req.body.extID,
-      req.body.weightInGrams
+      req.body.extID
     ])
     if(result.rowCount > 0){
       res.status(201).json({
@@ -141,14 +116,13 @@ router.post('/api/v1/products', async (req, res) => {
         ])
         if(checkIfProductExists.rowCount === 0) {
           let productRes = await db.query(
-            'INSERT INTO public."Product" ("supplierID", title, "imageUrl", price, stock, "extID", "weightInGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
+            'INSERT INTO public."Product" ("supplierID", title, "imageUrl", price, stock, "extID") VALUES ($1, $2, $3, $4, $5, $6) returning *', [
             product.supplierID,
             product.title,
             product.imageUrl,
             product.price,
             0,
-            product.extID,
-            product.weightInGrams
+            product.extID
           ])
           results.push(productRes.rows[0]);
         }
@@ -220,24 +194,22 @@ router.put('/api/v1/products', async (req, res) => {
         ])
         if(checkIfProductExists.rowCount > 0) {
           let productRes = await db.query(
-            'UPDATE public."Product" SET title=$1, "imageUrl"=$2, price=$3, "weightInGrams"=$4 WHERE "extID"=$5 returning *', [
+            'UPDATE public."Product" SET title=$1, "imageUrl"=$2, price=$3 WHERE "extID"=$4 returning *', [
             product.title,
             product.imageUrl,
             product.price,
-            product.weightInGrams,
             product.extID
           ])
           results.push(productRes.rows[0]);
         } else if(checkIfProductExists.rowCount === 0) {
           let productRes = await db.query(
-            'INSERT INTO public."Product" ("supplierID", title, "imageUrl", price, stock, "extID", "weightInGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
+            'INSERT INTO public."Product" ("supplierID", title, "imageUrl", price, stock, "extID") VALUES ($1, $2, $3, $4, $5, $6) returning *', [
             product.supplierID,
             product.title,
             product.imageUrl,
             product.price,
             0,
-            product.extID,
-            product.weightInGrams
+            product.extID
           ])
           results.push(productRes.rows[0]);
         }
@@ -309,6 +281,5 @@ router.delete('/api/v1/product/:id', async (req, res) => {
     console.log(error);
   }
 });
-
 
 export default router;

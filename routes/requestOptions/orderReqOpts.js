@@ -1,9 +1,4 @@
-let currentURL = process.env.URL_PROD;
-
-if(process.env.NODE_ENV === 'Development') {
-  currentURL = process.env.URL_DEV
-}
-
+let currentURL = process.env.URL;
 export function orderCheckExtExistsReqOpts (dataMain) {
   const res = {
     url: `${currentURL}/api/v1/order/ext/${dataMain.extOrderID}`,
@@ -27,7 +22,6 @@ export function orderAddReqOpts (dataMain) {
       "contactPhone": dataMain.phone,
       "address1": dataMain.address1,
       "address2": dataMain.address2,
-      "city": dataMain.city,
       "county": dataMain.county,
       "country": dataMain.country,
       "postcode": dataMain.postcode,
@@ -56,7 +50,6 @@ export function orderUpdateReqOpts (dataMain) {
       "contactPhone": dataMain.phone,
       "address1": dataMain.address1,
       "address2": dataMain.address2,
-      "city": dataMain.city,
       "county": dataMain.county,
       "country": dataMain.country,
       "postcode": dataMain.postcode,
