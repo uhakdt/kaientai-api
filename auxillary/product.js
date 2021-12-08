@@ -21,7 +21,6 @@ export function productFormatOrderProductsShopify (orderProducts) {
 
 export function productFormatOrderProductsWooCommerce (orderProducts) {
   let listOfOrderProducts = []
-  console.log(orderProducts)
   for (let i = 0; i < orderProducts.length; i++) {
     const e = orderProducts[i];
     let orderProduct = {
