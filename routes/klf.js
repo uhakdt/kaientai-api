@@ -25,7 +25,7 @@ router.post('/api/v1/klf/:platform/:supplierID', async (req, res) => {
       listOfOrderProducts = productFormatOrderProductsShopify(req.body.data.line_items);
       dataMain = klfDataMainDeclerationShopify(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
     } else if(req.params.platform === "woocommerce") {
-      listOfOrderProducts = productFormatOrderProductsWooCommerce(req.body.dataBody.line_items);
+      listOfOrderProducts = productFormatOrderProductsWooCommerce(req.body.data.line_items);
       dataMain = klfDataMainDeclerationWooCommerce(req.body.data, listOfOrderProducts, req.params.supplierID, "add", null, "In Progress");
     }
 

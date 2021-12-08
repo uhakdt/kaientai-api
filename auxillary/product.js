@@ -24,9 +24,8 @@ export function productFormatOrderProductsWooCommerce (orderProducts) {
   for (let i = 0; i < orderProducts.length; i++) {
     const e = orderProducts[i];
     let orderProduct = {
-      title: e.name,
+      extID: e.product_id,
       price: e.price,
-      imageUrl: null,
       quantity: e.quantity,
     }
     listOfOrderProducts.push(orderProduct);

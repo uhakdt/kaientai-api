@@ -16,7 +16,7 @@ export function SendEmailToKaientai (dataMain) {
     text: `Order Details:
   
     Order ID: ${dataMain.orderID}
-    User ID: ${dataMain.intUserID}
+    User ID: ${dataMain.userID}
     Supplier ID: ${dataMain.supplierID}
     Date & Time: ${dataMain.dateAndTime}
     Total Price: ${dataMain.totalAmount}

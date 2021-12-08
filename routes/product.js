@@ -25,6 +25,28 @@ router.get('/api/v1/products', async (req, res) => {
   }
 });
 
+// GET PRODUCTS PER SUPPLIER
+router.get('/api/v1/products/:supplierID', async (req, res) => {
+  try {
+    const results = await db.query(`SELECT * FROM public."Product" WHERE "supplierID"=$1;`,[req.params.supplierID])
+    
+    if (results.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          products: results.rows
+        }
+      });
+    } else {
+      res.status(204).json({
+        status: "No Results."
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // GET PRODUCTS IN STOCK
 router.get('/api/v1/products/inStock', async (req, res) => {
   try {
