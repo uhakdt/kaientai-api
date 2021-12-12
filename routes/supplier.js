@@ -25,7 +25,7 @@ router.get('/api/v1/suppliers', async (req, res) => {
   }
 });
 
-// GET SUPPLIER
+// GET SUPPLIER BY ID
 router.get('/api/v1/supplier/:id', async (req, res) => {
   try {
     const result = await db.query(`SELECT * FROM public."Supplier" WHERE id=$1;`, [
@@ -49,7 +49,7 @@ router.get('/api/v1/supplier/:id', async (req, res) => {
   }
 });
 
-// GET SUPPLIER ID BY EMAIL
+// GET SUPPLIER BY EMAIL
 router.post('/api/v1/supplier/:supplierEmail', async (req, res) => {
   try {
     const result = await db.query(`SELECT * FROM public."Supplier" WHERE "contactEmail"=$1;`, [
@@ -61,30 +61,6 @@ router.post('/api/v1/supplier/:supplierEmail', async (req, res) => {
         status: "OK",
         data: {
           supplierID: result.rows[0]
-        }
-      })
-    } else {
-      res.status(204).json({
-        status: "ID did not match."
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-// GET SUPPLIER ID BY DOMAIN
-router.get('/api/v1/supplier/idPerDomain/:domain', async (req, res) => {
-  try {
-    const result = await db.query(`SELECT * FROM public."Supplier" WHERE domain=$1;`, [
-      req.params.domain
-    ])
-
-    if (result.rowCount > 0) {
-      res.status(200).json({
-        status: "OK",
-        data: {
-          supplierID: result.rows[0].id
         }
       })
     } else {
