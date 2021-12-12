@@ -126,7 +126,7 @@ router.get('/api/v1/supplier/checkExtExists/:platform/:extID', async (req, res) 
 router.put('/api/v1/supplier', async (req, res) => {
   try {
     const result = await db.query(
-      'UPDATE public."Supplier" SET name=$2, "contactName"=$3, "contactEmail"=$4, "contactPhone"=$5, "registrationNumber"=$6, platform=$7, "extID"=$8, domain=$9, "onBoardingProcess"=$10, address1=$11, address=$12, country=$13, postcode=$14 WHERE id=$1 returning *',[
+      'UPDATE public."Supplier" SET name=$2, "contactName"=$3, "contactEmail"=$4, "contactPhone"=$5, "registrationNumber"=$6, platform=$7, "extID"=$8, domain=$9, "onBoardingProgress"=$10, address1=$11, address=$12, country=$13, postcode=$14 WHERE id=$1 returning *',[
       req.body.id,
       req.body.name,
       req.body.contactName,
@@ -137,7 +137,7 @@ router.put('/api/v1/supplier', async (req, res) => {
       req.body.extID,
       req.body.active,
       req.body.domain,
-      req.body.onBoardingProcess,
+      req.body.onBoardingProgress,
       req.body.address1,
       req.body.address2,
       req.body.country,
@@ -165,7 +165,7 @@ router.post('/api/v1/supplier', async (req, res) => {
   try {
     if(resultAddress.rowCount > 0){
       const result = await db.query(
-        'INSERT INTO public."Supplier" (name, "contactName", "contactEmail", "contactPhone", "registrationNumber", platform, "extID", active, domain, onBoardingProcess, address1, address2, country, postcode) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning *', [
+        'INSERT INTO public."Supplier" (name, "contactName", "contactEmail", "contactPhone", "registrationNumber", platform, "extID", active, domain, onBoardingProgress, address1, address2, country, postcode) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning *', [
           req.body.name,
           req.body.contactName,
           req.body.contactEmail,
@@ -175,7 +175,7 @@ router.post('/api/v1/supplier', async (req, res) => {
           req.body.extID,
           req.body.active,
           req.body.domain,
-          req.body.onBoardingProcess,
+          req.body.onBoardingProgress,
           req.body.address1,
           req.body.address2,
           req.body.country,
