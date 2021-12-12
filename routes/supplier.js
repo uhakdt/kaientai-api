@@ -60,7 +60,7 @@ router.post('/api/v1/supplier/:supplierEmail', async (req, res) => {
       res.status(200).json({
         status: "OK",
         data: {
-          supplierID: result.rows[0]
+          supplier: result.rows[0]
         }
       })
     } else {
