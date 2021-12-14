@@ -138,13 +138,14 @@ router.post('/api/v1/products', async (req, res) => {
         ])
         if(checkIfProductExists.rowCount === 0) {
           let productRes = await db.query(
-            'INSERT INTO public."Product" ("supplierID", title, "imageUrl", price, stock, "extID") VALUES ($1, $2, $3, $4, $5, $6) returning *', [
+            'INSERT INTO public."Product" ("supplierID", title, price, stock, "extID", "dimensionsCm", "weightGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
             product.supplierID,
             product.title,
-            product.imageUrl,
             product.price,
             0,
-            product.extID
+            product.extID,
+            product.dimensionsCm,
+            product.weightGrams
           ])
           results.push(productRes.rows[0]);
         }
@@ -172,15 +173,16 @@ router.post('/api/v1/products', async (req, res) => {
 router.put('/api/v1/product', async (req, res) => {
   try {
     const result = await db.query(
-      'UPDATE public."Product" SET "supplierID"=$2, title=$3, "imageUrl"=$4, price=$5, stock=$6, "extID"=$7, "weightInGrams"=$8 WHERE id=$1 returning *', [
+      'UPDATE public."Product" SET "supplierID"=$2, title=$3, "imageUrl"=$4, price=$5, stock=$6, "extID"=$7, "dimensionsCm"=$8, "weightGrams"=$9, "stripeID"=$10 WHERE id=$1 returning *', [
       req.body.id,
       req.body.supplierID,
       req.body.title,
-      req.body.imageUrl,
       req.body.price,
       req.body.stock,
       req.body.extID,
-      req.body.weightInGrams
+      req.body.dimensionsCm,
+      req.body.weightGrams,
+      req.body.stripeID
     ])
     if (result.rowCount > 0) {
       res.status(200).json({
@@ -250,6 +252,31 @@ router.put('/api/v1/products', async (req, res) => {
       }
     }
     updateProducts();
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// UPDATE STRIPEID
+router.put('/api/v1/product/stripe', async (req, res) => {
+  try {
+    const result = await db.query(
+      'UPDATE public."Product" SET "stripeID"=$2 WHERE id=$1 returning *', [
+      req.body.id,
+      req.body.stripeID
+    ])
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          product: result.rows[0]
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "ID did not match."
+      });
+    }
   } catch (error) {
     console.log(error);
   }
