@@ -171,3 +171,44 @@ export async function updateOrderProductsFromOrder (orderProducts, orderID) {
 
   return result;
 }
+
+export function productsFormatShopify (products, supplierID) {
+  // Variable declarations
+  let listOfProducts = []
+
+  for (let i = 0; i < products.length; i++) {
+    const product = products[i];
+
+    if(product.variants.length === 1) {
+      let variantTemp = product.variants[0]
+      let product = {
+        supplierID: supplierID,
+        title: product.title,
+        price: variantTemp.price,
+        extID: variantTemp.id,
+        dimensionsCm: null,
+        weightGrams: variantTemp.weight_unit === 'lb' 
+        ? (variantTemp.weight * 453.59237).toFixed(2) : variantTemp.weight_unit === 'oz' 
+        ? (variantTemp.weight * 28.349523125).toFixed(2) : variantTemp.weight_unit === 'kg' 
+        ? variantTemp.weight * 1000 : variantTemp.weight
+      }
+      listOfProducts.push(product);
+    } else {
+      product.variants.forEach((variant) => {
+        let productRes = {
+          supplierID: supplierID,
+          title: product.title + ' - ' + variant.title,
+          price: variant.price,
+          extID: variant.id,
+          dimensionsCm: null,
+          weightGrams: variant.weight_unit === 'lb' 
+          ? (variant.weight * 453.59237).toFixed(2) : variant.weight_unit === 'oz' 
+          ? (variant.weight * 28.349523125).toFixed(2) : variant.weight_unit === 'kg' 
+          ? variant.weight * 1000 : variant.weight
+        }
+        listOfProducts.push(productRes);
+      });
+    }
+  }
+  return listOfProducts;
+}

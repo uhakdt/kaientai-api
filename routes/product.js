@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../db';
+import { productsFormatShopify } from '../auxillary/product.js'
 
 const router = express.Router();
 
@@ -122,10 +123,11 @@ router.post('/api/v1/product', async (req, res) => {
 });
 
 // CREATE PRODUCTS
-router.post('/api/v1/products', async (req, res) => {
+router.post('/api/v1/products/:supplierID/:platform', async (req, res) => {
   try {
     let results = [];
-    const listOfProducts = req.body.products;
+    const listOfProducts = req.params.platform === 'shopify' ? productsFormatShopify(req.body, req.params.supplierID) : req.body;
+    console.log(listOfProducts);
 
     const addProducts = async () => {
       // Go through all products from the request body
