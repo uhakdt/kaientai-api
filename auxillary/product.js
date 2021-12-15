@@ -93,9 +93,11 @@ export async function updateOrderProductsFromOrder (orderProducts, orderID) {
     const deleteOrderProducts = async () => {
       return Promise.all(orderProductIDsToDelete.map(item => deleteOrderProduct(item)))
     };
-    deleteOrderProducts().then(response => {
+    deleteOrderProducts()
+    .then(response => {
       console.log(response)
-    }).catch(error => {
+    })
+    .catch(error => {
       console.log(error);
     });
 
@@ -121,8 +123,8 @@ export async function updateOrderProductsFromOrder (orderProducts, orderID) {
         },
       };
       await request(res)
-      .catch(err => {
-        console.log(err)
+      .catch(error => {
+        console.log(error)
       })
     };
     const addOrderProducts = async () => {
@@ -155,8 +157,8 @@ export async function updateOrderProductsFromOrder (orderProducts, orderID) {
         },
       };
       await request(res)
-      .catch(err => {
-        console.log(err)
+      .catch(error => {
+        console.log(error)
       })
     };
     const updateOrderProducts = async () => {

@@ -46,7 +46,7 @@ router.post('/api/v1/klf/:platform/:supplierID', async (req, res) => {
   
           // 4.2 Create Order + Order Products
           dataMain.userID = userRes.data.user.id;
-          const newOrderCreate = await createNewOrder(dataMain)
+          await createNewOrder(dataMain)
           .then(async (orderRes) => {
             if(orderRes.status === 'OK') {
               dataMain.orderID = orderRes.data.order.id;
@@ -66,12 +66,13 @@ router.post('/api/v1/klf/:platform/:supplierID', async (req, res) => {
               })
             }
           })
-          .catch((err) => {
-            console.log(err)
+          .catch((error) => {
+            res.status(400).json({ error: error });
           });
         })
-        .catch((err) => {
+        .catch((error) => {
           res.status(403).json({
+            error: error,
             status: "Order cannot be fulfiled. Same Order ID."
           })
         });
@@ -94,7 +95,7 @@ router.post('/api/v1/klf/:platform/:supplierID', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 })
 

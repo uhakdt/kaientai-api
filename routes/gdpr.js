@@ -58,7 +58,7 @@ router.post('/api/v1/shopify/customers/dataRequest', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -86,7 +86,7 @@ router.delete('/api/v1/shopify/customers/redact', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -129,7 +129,7 @@ router.delete('/api/v1/shopify/shop/redact', async (req, res) => {
       
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 

@@ -18,8 +18,8 @@ export async function decreaseProductsStockNewOrder (orderProducts) {
         },
       };
       await request(res)
-      .catch(function(err) {
-        console.log(err.statusCode)
+      .catch(function(error) {
+        console.log(error.statusCode)
       });
     }
   };
@@ -29,8 +29,8 @@ export async function decreaseProductsStockNewOrder (orderProducts) {
   };
 
   updateProductsStock()
-  .catch(function(err) {
-    console.log(err);
+  .catch(function(error) {
+    console.log(error);
   });
 }
 
@@ -72,7 +72,7 @@ export async function decreaseProductsStockNewOrder (orderProducts) {
 //       "quantity": item.quantity
 //     },
 //   };
-//   request(res, (err, resp, body) => {
+//   request(res, (error, resp, body) => {
 //     console.log(resp)
 //   })
 

@@ -22,7 +22,7 @@ router.get('/api/v1/products', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -44,7 +44,7 @@ router.get('/api/v1/products/:supplierID', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -66,7 +66,7 @@ router.get('/api/v1/products/inStock', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -89,7 +89,7 @@ router.get('/api/v1/product/:id', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -118,7 +118,7 @@ router.post('/api/v1/product', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -167,7 +167,7 @@ router.post('/api/v1/products/:supplierID/:platform', async (req, res) => {
     }
     addProducts();
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -199,7 +199,7 @@ router.put('/api/v1/product', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -255,7 +255,7 @@ router.put('/api/v1/products', async (req, res) => {
     }
     updateProducts();
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -280,7 +280,7 @@ router.put('/api/v1/product/stripe', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -304,7 +304,7 @@ router.put('/api/v1/product/stock', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -329,7 +329,7 @@ router.delete('/api/v1/product/:id', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 

@@ -30,8 +30,8 @@ export async function createNewOrder (dataMain) {
   .then(function (response){
     result = response
   })
-  .catch(err => {
-    result = err.response.body;
+  .catch(error => {
+    result = error.response.body;
   });
   return result;
 }

@@ -12,8 +12,8 @@ export async function checkPostcodeNewOrder(dataMain) {
     },
   };
   let result = await request(res)
-  .catch(function(err) {
-    console.log(err)
+  .catch(function(error) {
+    console.log(error)
   });
   return result.local;
 }

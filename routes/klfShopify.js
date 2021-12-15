@@ -71,7 +71,7 @@ router.post('/api/v1/klf/shopify/:supplierID', async (req, res) => {
       })
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 })
 
@@ -88,7 +88,7 @@ router.put('/api/v1/klf/shopify/:supplierID/:orderID', async (req, res) => {
     CheckOrderFulfilmentUpdate(orderUpdateReqOptsRes, productUpdateStockReqOptsRes, dataMain, res);
 
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 })
 
@@ -145,7 +145,7 @@ router.put('/api/v1/klf/shopify/cancellation/:supplierID/:orderID', async (req, 
     orderFulfillmentCancelled(orderUpdateReqOptsRes, productUpdateStockReqOptsRes, dataMain, res);
 
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 })
 

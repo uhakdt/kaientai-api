@@ -31,7 +31,7 @@ router.get('/api/v1/orders', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -55,7 +55,7 @@ router.get('/api/v1/orders/perSupplier/:supplierID', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -79,7 +79,7 @@ router.get('/api/v1/orders/perUserEmail/:email', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -112,7 +112,7 @@ router.get('/api/v1/orders/perSupplierDomain/:domain', async (req, res) => {
     }
 
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -136,7 +136,7 @@ router.get('/api/v1/order/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -160,7 +160,7 @@ router.get('/api/v1/order/ext/:id', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 })
 
@@ -226,7 +226,7 @@ router.post('/api/v1/order', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   };
 });
 
@@ -296,7 +296,7 @@ router.put('/api/v1/order', async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -339,7 +339,7 @@ router.delete('/api/v1/order/:id', async (req, res) => {
     })
 
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ error: error.message });
   }
 });
 

@@ -25,8 +25,8 @@ export async function addUserNewOrder (dataMain) {
   .then(function(res){
     result = res
   })
-  .catch(function(err){
-    result = err.response.body
+  .catch(function(error){
+    result = error.response.body
   });
   return result
 }
