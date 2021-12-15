@@ -137,12 +137,37 @@ router.put('/api/v1/supplier', async (req, res) => {
 });
 
 // UPDATE SUPPLIER ONBOARDINGPROGRESS
-router.put('/api/v1/supplier/:supplierID/:step', async (req, res) => {
+router.put('/api/v1/supplier/onBoardingProgress', async (req, res) => {
   try {
     const result = await db.query(
       'UPDATE public."Supplier" SET "onBoardingProgress"[$2]=true WHERE id=$1 returning *',[
-      req.params.supplierID,
-      req.params.step
+      req.body.supplierID,
+      req.body.step
+    ])
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          supplier: result.rows[0]
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "ID did not match."
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// UPDATE SUPPLIER STRIPEID
+router.put('/api/v1/supplier/stripe', async (req, res) => {
+  try {
+    const result = await db.query(
+      'UPDATE public."Supplier" SET "stripeID"=$2 WHERE id=$1 returning *',[
+      req.body.supplierID,
+      req.body.stripeID
     ])
     if (result.rowCount > 0) {
       res.status(200).json({
