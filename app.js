@@ -18,6 +18,7 @@ import product from './routes/product.js';
 import user from './routes/user.js';
 import postcode from './routes/postcode.js';
 import supplier from './routes/supplier.js';
+import shopifySession from './routes/shopifySession.js';
 
 app.use(klf);
 app.use(order);
@@ -26,5 +27,6 @@ app.use(product);
 app.use(user);
 app.use(postcode);
 app.use(supplier);
+app.use(shopifySession);
 
 export default app;
