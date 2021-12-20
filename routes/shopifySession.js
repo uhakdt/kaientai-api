@@ -1,6 +1,6 @@
 import express from 'express';
 import db from '../db';
-import { ConvertStringDateAndTimeToMs, DaysInMs, GetDateAndTimeNow, GetDateAndTimeNowInMs } from '../auxillary/dateAndTimeNow';
+import { CheckExpiryDateNDays, GetDateAndTimeNow } from 'kaientai-auxiliary';
 
 const router = express.Router();
 
@@ -25,11 +25,17 @@ router.get('/api/v1/shopifySession/:supplierID', async (req, res) => {
 });
 
 // CHECK SHOPIFY SESSION EXPIRY
-router.get('/api/v1/shopifySession/checkExpiry/:supplierID', async (req, res) => {
+router.post('/api/v1/shopifySession/checkExpiry', async (req, res) => {
   try {
-    const result = await db.query(`SELECT * FROM public."ShopifySession" WHERE "supplierID"=$1;`, [req.params.supplierID])
+    let result;
+    if(req.body.supplierID != null) {
+      result = await db.query(`SELECT * FROM public."ShopifySession" WHERE "supplierID"=$1;`, [req.body.supplierID])
+    } else {
+      result = await db.query(`SELECT * FROM public."ShopifySession" WHERE domain=$1;`, [req.body.domain])
+    }
+
     if (result.rowCount > 0) {
-      if(ConvertStringDateAndTimeToMs(result.rows[0].dateAndTime) + DaysInMs(7) >= GetDateAndTimeNowInMs()) {
+      if(CheckExpiryDateNDays(result.rows[0].dateAndTime, 7)) {
         res.status(200).json({
           status: "OK",
           data: {
