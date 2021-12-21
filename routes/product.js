@@ -127,7 +127,6 @@ router.post('/api/v1/products/:supplierID/:platform', async (req, res) => {
   try {
     let results = [];
     const listOfProducts = req.params.platform === 'shopify' ? productsFormatShopify(req.body, req.params.supplierID) : req.body;
-    console.log(listOfProducts);
 
     const addProducts = async () => {
       // Go through all products from the request body

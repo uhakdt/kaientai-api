@@ -25,36 +25,14 @@ router.get('/api/v1/suppliers', async (req, res) => {
   }
 });
 
-// GET SUPPLIER BY ID
-router.get('/api/v1/supplier/:id', async (req, res) => {
+// GET SUPPLIER
+router.get('/api/v1/supplier/:by/:identifier', async (req, res) => {
   try {
-    const result = await db.query(`SELECT * FROM public."Supplier" WHERE id=$1;`, [
-      req.params.id
-    ])
-
-    if (result.rowCount > 0) {
-      res.status(200).json({
-        status: "OK",
-        data: {
-          supplier: result.rows[0]
-        }
-      })
-    } else {
-      res.status(204).json({
-        status: "ID did not match."
-      });
-    }
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// GET SUPPLIER BY EMAIL
-router.post('/api/v1/supplier/:supplierEmail', async (req, res) => {
-  try {
-    const result = await db.query(`SELECT * FROM public."Supplier" WHERE "contactEmail"=$1;`, [
-      req.params.supplierEmail
-    ])
+    let query = req.params.by === 'email' 
+      ? `SELECT * FROM public."Supplier" WHERE "contactEmail"=$1;` : req.params.by === 'id' 
+      ? `SELECT * FROM public."Supplier" WHERE id=$1;` : 
+      `SELECT * FROM public."Supplier" WHERE domain=$1;`
+    let result = await db.query(query, [req.params.identifier])
 
     if (result.rowCount > 0) {
       res.status(200).json({
