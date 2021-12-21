@@ -2,9 +2,9 @@ import express from 'express';
 import db from '../db';
 import request from 'request';
 import { productCheckIfEnoughStock } from '../auxillary/product';
+import { HostUrl } from '../auxillary/globalVariables';
 
 const router = express.Router();
-let currentURL = process.env.URL;
 
 // GET ORDER PRODUCTS
 router.get('/api/v1/orderProducts/:orderID', async (req, res) => {
@@ -64,7 +64,7 @@ router.post('/api/v1/orderProduct', async (req, res) => {
     ])
     if(resultOrderProductExists.rowCount > 0) {
       let orderProductUpdateOptsRes = {
-        url: `${currentURL}/api/v1/orderProduct/stock`,
+        url: `${HostUrl}/orderProduct/stock`,
         method: 'PUT',
         json: {
           "orderProductID": resultOrderProductExists.rows[0].id,

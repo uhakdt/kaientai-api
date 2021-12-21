@@ -1,11 +1,10 @@
 import request from 'request-promise';
-
-let currentURL = process.env.URL;
+import { HostUrl } from '../../auxillary/globalVariables';
 
 export async function addUserNewOrder (dataMain) {
   let result;
   const res = {
-    url: `${currentURL}/api/v1/user`,
+    url: `${HostUrl}/user`,
     method: 'POST',
     json: {
       "name": dataMain.name,

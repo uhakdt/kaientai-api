@@ -1,7 +1,8 @@
-let currentURL = process.env.URL;
+import { HostUrl } from "../../auxillary/globalVariables";
+
 export function orderCheckExtExistsReqOpts (dataMain) {
   const res = {
-    url: `${currentURL}/api/v1/order/ext/${dataMain.extOrderID}`,
+    url: `${HostUrl}/order/ext/${dataMain.extOrderID}`,
     method: 'GET'
   }
   return res;
@@ -9,7 +10,7 @@ export function orderCheckExtExistsReqOpts (dataMain) {
 
 export function orderAddReqOpts (dataMain) {
   const res = {
-    url: `${currentURL}/api/v1/order`,
+    url: `${HostUrl}/order`,
     method: 'POST',
     json: {
       "dateAndTime": dataMain.dateAndTime,
@@ -36,7 +37,7 @@ export function orderAddReqOpts (dataMain) {
 
 export function orderUpdateReqOpts (dataMain) {
   const res = {
-    url: `${currentURL}/api/v1/order`,
+    url: `${HostUrl}/order`,
     method: 'PUT',
     json: {
       "id": dataMain.orderID,

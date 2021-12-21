@@ -2,14 +2,13 @@ import express from 'express';
 import db from '../db';
 import request from 'request';
 import { updateOrderProductsFromOrder } from '../auxillary/product';
+import { HostUrl } from '../auxillary/globalVariables';
 // import { orderProductsUpdate } from '../auxillary/product';
 
 const router = express.Router();
 
-let currentURL = process.env.URL;
-
 const reqOptDeleteOrderProducts = {
-  url: `${currentURL}/api/v1/orderProducts/`,
+  url: `${HostUrl}/orderProducts/`,
   method: 'DELETE'
 }
 
@@ -260,7 +259,7 @@ router.put('/api/v1/order', async (req, res) => {
       //   const orderProductIDsToAdd = newOrderProductsIDsList.filter(x => !oldOrderProductsIDsList.includes(x))
 
       //   const res = {
-      //     url: `${currentURL}/api/v1/orderProduct`,
+      //     url: `${HostUrl}/orderProduct`,
       //     method: 'POST',
       //     json: {
       //       "orderID": req.body.id,

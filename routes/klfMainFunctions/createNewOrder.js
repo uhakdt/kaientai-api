@@ -1,12 +1,11 @@
 import request from 'request-promise';
 import { GetDateAndTimeNow } from '../../auxillary/dateAndTimeNow';
-
-let currentURL = process.env.URL;
+import { HostUrl } from '../../auxillary/globalVariables';
 
 export async function createNewOrder (dataMain) {
   let result;
   const res = {
-    url: `${currentURL}/api/v1/order`,
+    url: `${HostUrl}/order`,
     method: 'POST',
     json: {
       "dateAndTime": GetDateAndTimeNow(),

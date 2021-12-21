@@ -1,12 +1,11 @@
 import request from 'request-promise';
-
-let currentURL = process.env.URL;
+import { HostUrl } from '../../auxillary/globalVariables';
 
 export async function checkEnoughStock (dataMain) {
   let orderToBeFulfilledCount = 0;
   let orderToBeFulfilled = false;
   let res = {
-    url: `${currentURL}/api/v1/products/${dataMain.supplierID}`,
+    url: `${HostUrl}/products/${dataMain.supplierID}`,
     method: 'GET'
   };
 

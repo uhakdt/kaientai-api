@@ -1,7 +1,6 @@
 import request from 'request-promise';
+import { HostUrl } from '../../auxillary/globalVariables';
 import db from '../../db';
-
-let currentURL = process.env.URL;
 
 export async function decreaseProductsStockNewOrder (orderProducts) {
   const updateProductStock = async item => {
@@ -10,7 +9,7 @@ export async function decreaseProductsStockNewOrder (orderProducts) {
     
     if(oldProduct.rowCount > 0) {
       const res = {
-        url: `${currentURL}/api/v1/product/stock`,
+        url: `${HostUrl}/product/stock`,
         method: 'PUT',
         json: {
           "stock": oldProductStock - item.quantity,
@@ -40,7 +39,7 @@ export async function decreaseProductsStockNewOrder (orderProducts) {
 //     oldProductStock = oldProductStock.rows[0].stock;
 
 //     const res = {
-//       url: `${currentURL}/api/v1/product/stock`,
+//       url: `${HostUrl}/product/stock`,
 //       method: 'PUT',
 //       json: {
 //         "stock": oldProductStock + item.quantity,
@@ -64,7 +63,7 @@ export async function decreaseProductsStockNewOrder (orderProducts) {
 // export async function decreaseProductsStock (orderProduct) {
 //   let result;
 //   const res = {
-//     url: `${currentURL}/api/v1/product/stock`,
+//     url: `${HostUrl}/product/stock`,
 //     method: 'PUT',
 //     json: {
 //       "orderProductID": item.id,

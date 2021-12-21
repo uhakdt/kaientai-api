@@ -3,10 +3,13 @@ import "dotenv/config.js";
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import { FrontendUrl, BackendUrl } from "./auxillary/globalVariables.js";
 
 // Express Setup
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin:[FrontendUrl, FrontendUrl + '/*', BackendUrl, BackendUrl + '/*', 'https://kaientai.loca.lt', 'https://kaientai.loca.lt/*'],
+}));
 app.use(express.json());
 app.use(morgan("dev"));
 

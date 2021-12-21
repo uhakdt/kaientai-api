@@ -1,7 +1,6 @@
 import db from '../db';
 import request from 'request-promise';
-
-let currentURL = process.env.URL;
+import { HostUrl } from './globalVariables';
 
 export function productFormatOrderProductsShopify (orderProducts) {
   // Variable declarations
@@ -114,7 +113,7 @@ export async function updateOrderProductsFromOrder (orderProducts, orderID) {
 
     const addOrderProduct = async item => {
       const res = {
-        url: `${currentURL}/api/v1/orderProduct`,
+        url: `${HostUrl}/orderProduct`,
         method: 'POST',
         json: {
           "orderID": orderID,
@@ -148,7 +147,7 @@ export async function updateOrderProductsFromOrder (orderProducts, orderID) {
 
     const updateOrderProduct = async item => {
       const res = {
-        url: `${currentURL}/api/v1/orderProduct/stock`,
+        url: `${HostUrl}/orderProduct/stock`,
         method: 'PUT',
         json: {
           "orderProductID": item.id,

@@ -1,8 +1,8 @@
-let currentURL = process.env.URL;
+import { HostUrl } from "../../auxillary/globalVariables";
 
 export function productUpdateStockReqOpts () {
   const res = {
-    url: `${currentURL}/api/v1/product/stock`,
+    url: `${HostUrl}/product/stock`,
     method: 'PUT',
     json: {
       "id": null,

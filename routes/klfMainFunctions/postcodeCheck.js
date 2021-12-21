@@ -1,10 +1,9 @@
 import request from 'request-promise';
-
-let currentURL = process.env.URL;
+import { HostUrl } from '../../auxillary/globalVariables';
 
 export async function checkPostcodeNewOrder(dataMain) {
   let res = {
-    url: `${currentURL}/api/v1/postcode/check`,
+    url: `${HostUrl}/postcode/check`,
     method: 'POST',
     json: {
       "supplierID": dataMain.supplierID,
