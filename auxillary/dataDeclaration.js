@@ -1,4 +1,4 @@
-import { GetDateAndTimeNow } from './dateAndTimeNow';
+import { GetDateAndTimeNow } from 'kaientai-auxiliary';
 
 export function klfDataMainDeclerationShopify (dataBody, listOfOrderProducts, supplierID, type, orderID, orderStatus) {
   let res = {

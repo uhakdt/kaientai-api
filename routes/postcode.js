@@ -1,6 +1,6 @@
 import express from 'express';
 import db from '../db';
-import { GetDateAndTimeNow } from '../auxillary/dateAndTimeNow';
+import { GetDateAndTimeNow } from 'kaientai-auxiliary';
 
 const router = express.Router();
 

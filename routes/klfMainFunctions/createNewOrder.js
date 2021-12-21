@@ -1,5 +1,5 @@
 import request from 'request-promise';
-import { GetDateAndTimeNow } from '../../auxillary/dateAndTimeNow';
+import { GetDateAndTimeNow } from 'kaientai-auxiliary';
 import { HostUrl } from '../../auxillary/globalVariables';
 
 export async function createNewOrder (dataMain) {
