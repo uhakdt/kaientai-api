@@ -28,6 +28,7 @@ router.get('/api/v1/suppliers', async (req, res) => {
 // GET SUPPLIER
 router.get('/api/v1/supplier/:by/:identifier', async (req, res) => {
   try {
+    console.log(req.params)
     let query = req.params.by === 'email' 
       ? `SELECT * FROM public."Supplier" WHERE "contactEmail"=$1;` : req.params.by === 'id' 
       ? `SELECT * FROM public."Supplier" WHERE id=$1;` : 

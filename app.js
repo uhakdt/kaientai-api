@@ -8,7 +8,8 @@ import { FrontendUrl, BackendUrl } from "./auxillary/globalVariables.js";
 // Express Setup
 const app = express();
 app.use(cors({
-  origin:[FrontendUrl, FrontendUrl + '/*', BackendUrl, BackendUrl + '/*', 'https://kaientai.loca.lt', 'https://kaientai.loca.lt/*'],
+  origin: '*'
+  // origin:[FrontendUrl, FrontendUrl + '/*', BackendUrl, BackendUrl + '/*', 'https://kaientai.loca.lt', 'https://kaientai.loca.lt/*'],
 }));
 app.use(express.json());
 app.use(morgan("dev"));
