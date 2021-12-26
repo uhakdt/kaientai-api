@@ -78,11 +78,11 @@ router.get('/api/v1/supplier/checkExtExists/:platform/:extID', async (req, res) 
 });
 
 // UPDATE SUPPLIER
-router.put('/api/v1/supplier', async (req, res) => {
+router.put('/api/v1/supplier/:id', async (req, res) => {
   try {
     const result = await db.query(
-      'UPDATE public."Supplier" SET name=$2, "contactName"=$3, "contactEmail"=$4, "contactPhone"=$5, "registrationNumber"=$6, platform=$7, "extID"=$8, domain=$9, "onBoardingProgress"=$10, address1=$11, address=$12, country=$13, postcode=$14 WHERE id=$1 returning *',[
-      req.body.id,
+      'UPDATE public."Supplier" SET name=$2, "contactName"=$3, "contactEmail"=$4, "contactPhone"=$5, "registrationNumber"=$6, platform=$7, "extID"=$8, active=$9, domain=$10, "onBoardingProgress"=$11, address1=$12, address2=$13, country=$14, postcode=$15, "stripeID"=$16 WHERE id=$1 returning *',[
+      req.params.id,
       req.body.name,
       req.body.contactName,
       req.body.contactEmail,
@@ -96,7 +96,8 @@ router.put('/api/v1/supplier', async (req, res) => {
       req.body.address1,
       req.body.address2,
       req.body.country,
-      req.body.postcode
+      req.body.postcode,
+      req.body.stripeID
     ])
     if (result.rowCount > 0) {
       res.status(200).json({
@@ -168,43 +169,35 @@ router.put('/api/v1/supplier/stripe', async (req, res) => {
 // CREATE SUPPLIER
 router.post('/api/v1/supplier', async (req, res) => {
   try {
-    if(resultAddress.rowCount > 0){
-      const result = await db.query(
-        'INSERT INTO public."Supplier" (name, "contactName", "contactEmail", "contactPhone", "registrationNumber", platform, "extID", active, domain, onBoardingProgress, address1, address2, country, postcode) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) returning *', [
-          req.body.name,
-          req.body.contactName,
-          req.body.contactEmail,
-          req.body.contactPhone,
-          req.body.registrationNumber,
-          req.body.platform,
-          req.body.extID,
-          req.body.active,
-          req.body.domain,
-          req.body.onBoardingProgress,
-          req.body.address1,
-          req.body.address2,
-          req.body.country,
-          req.body.postcode
-      ])
-  
-      if(result.rowCount > 0){
-        res.status(201).json({
-          status: "OK",
-          data: {
-            supplier: result.rows[0]
-          }
-        })
-      } else {
-        res.status(500).json({
-          status: "Not sure what happened."
-        })
-      }
-    } else {
-      res.status(500).json({
-        status: "Cannot add address."
+    const result = await db.query(
+      'INSERT INTO public."Supplier" (name, "contactName", "contactEmail", "contactPhone", "registrationNumber", platform, "extID", active, domain, "onBoardingProgress", address1, address2, country, postcode, "stripeID") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning *', [
+        req.body.name,
+        req.body.contactName,
+        req.body.contactEmail,
+        req.body.contactPhone,
+        req.body.registrationNumber,
+        req.body.platform,
+        req.body.extID,
+        false,
+        req.body.domain,
+        [false, false, false],
+        req.body.address1,
+        req.body.address2,
+        req.body.country,
+        req.body.postcode,
+        false
+    ])
+
+    if(result.rowCount > 0){
+      res.status(201).json({
+        status: "OK",
+        data: {
+          supplier: result.rows[0]
+        }
       })
+    } else {
+      res.status(500).json({ status: "Not sure what happened." })
     }
-    
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
