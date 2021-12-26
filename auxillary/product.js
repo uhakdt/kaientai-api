@@ -178,11 +178,11 @@ export function productsFormatShopify (products, supplierID) {
   let listOfProducts = []
 
   for (let i = 0; i < products.length; i++) {
-    const product = products[i];
+    let product = products[i];
 
     if(product.variants.length === 1) {
       let variantTemp = product.variants[0]
-      let product = {
+      let productTemp = {
         supplierID: supplierID,
         title: product.title,
         price: variantTemp.price,
@@ -193,7 +193,7 @@ export function productsFormatShopify (products, supplierID) {
         ? (variantTemp.weight * 28.349523125).toFixed(2) : variantTemp.weight_unit === 'kg' 
         ? variantTemp.weight * 1000 : variantTemp.weight
       }
-      listOfProducts.push(product);
+      listOfProducts.push(productTemp);
     } else {
       product.variants.forEach((variant) => {
         let productRes = {

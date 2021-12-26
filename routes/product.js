@@ -126,45 +126,41 @@ router.post('/api/v1/product', async (req, res) => {
 router.post('/api/v1/products/:supplierID/:platform', async (req, res) => {
   try {
     let results = [];
-    const listOfProducts = req.params.platform === 'shopify' ? productsFormatShopify(req.body, req.params.supplierID) : req.body;
-
-    const addProducts = async () => {
-      // Go through all products from the request body
-      for (let i = 0; i < listOfProducts.length; i++) {
-        const product = listOfProducts[i];
-        
-        // check if the product is already in the db
-        let checkIfProductExists = await db.query('SELECT * FROM public."Product" WHERE "extID" = $1;', [
-          product.extID
+    const listOfProducts = req.params.platform === 'shopify' ? productsFormatShopify(req.body.listOfProducts, req.params.supplierID) : req.body;
+    // Go through all products from the request body
+    for (let i = 0; i < listOfProducts.length; i++) {
+      let product = listOfProducts[i];
+      
+      // check if the product is already in the db
+      let checkIfProductExists = await db.query('SELECT * FROM public."Product" WHERE "extID" = $1;', [
+        product.extID
+      ])
+      if(checkIfProductExists.rowCount === 0) {
+        let productRes = await db.query(
+          'INSERT INTO public."Product" ("supplierID", title, price, stock, "extID", "dimensionsCm", "weightGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
+          product.supplierID,
+          product.title,
+          product.price,
+          10000000,
+          product.extID,
+          product.dimensionsCm,
+          product.weightGrams
         ])
-        if(checkIfProductExists.rowCount === 0) {
-          let productRes = await db.query(
-            'INSERT INTO public."Product" ("supplierID", title, price, stock, "extID", "dimensionsCm", "weightGrams") VALUES ($1, $2, $3, $4, $5, $6, $7) returning *', [
-            product.supplierID,
-            product.title,
-            product.price,
-            0,
-            product.extID,
-            product.dimensionsCm,
-            product.weightGrams
-          ])
-          results.push(productRes.rows[0]);
-        }
-      }
-      if(results.length > 0){
-        res.status(201).json({
-          status: "OK",
-          data: {
-            products: results
-          }
-        })
-      } else if(results.length === 0) {
-        res.status(204).json({
-          status: "All Products have already been added."
-        })
+        results.push(productRes.rows[0]);
       }
     }
-    addProducts();
+    if(results.length > 0){
+      res.status(201).json({
+        status: "OK",
+        data: {
+          products: results
+        }
+      })
+    } else if(results.length === 0) {
+      res.status(204).json({
+        status: "All Products have already been added."
+      })
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
