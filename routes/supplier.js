@@ -166,6 +166,31 @@ router.put('/api/v1/supplier/stripe', async (req, res) => {
   }
 });
 
+// UPDATE SUPPLIER SHOPIFY SESSION
+router.put('/api/v1/supplier/shopifySession', async (req, res) => {
+  try {
+    const result = await db.query(
+      'UPDATE public."Supplier" SET "shopifySession"=$2 WHERE id=$1 returning *',[
+      req.body.supplierID,
+      req.body.shopifySession
+    ])
+    if (result.rowCount > 0) {
+      res.status(200).json({
+        status: "OK",
+        data: {
+          supplier: result.rows[0]
+        }
+      })
+    } else {
+      res.status(204).json({
+        status: "ID did not match."
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // CREATE SUPPLIER
 router.post('/api/v1/supplier', async (req, res) => {
   try {
