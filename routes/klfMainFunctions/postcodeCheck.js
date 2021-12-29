@@ -1,5 +1,5 @@
 import request from 'request-promise';
-import { HostUrl } from '../../auxillary/globalVariables';
+import { HostUrl } from '../../auxillary/globalVariables.js';
 
 export async function checkPostcodeNewOrder(dataMain) {
   let res = {

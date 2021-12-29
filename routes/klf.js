@@ -43,7 +43,7 @@ router.post('/api/v1/klf/:platform/:supplierID', async (req, res) => {
 
           // 4.1 Update Stock
           await decreaseProductsStockNewOrder(dataMain.orderProducts);
-  
+
           // 4.2 Create Order + Order Products
           dataMain.userID = userRes.data.user.id;
           await createNewOrder(dataMain)
@@ -51,7 +51,7 @@ router.post('/api/v1/klf/:platform/:supplierID', async (req, res) => {
             if(orderRes.status === 'OK') {
               dataMain.orderID = orderRes.data.order.id;
 
-              // 5. Send Emails + Response
+              // 5. Send Email to us + Response
               email.SendEmailToKaientai(dataMain);
               res.status(200).json({
                 status: "OK."
