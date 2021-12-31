@@ -167,11 +167,12 @@ router.put('/api/v1/supplier/stripe', async (req, res) => {
 });
 
 // UPDATE SUPPLIER SHOPIFY SESSION
-router.put('/api/v1/supplier/shopifySession', async (req, res) => {
+router.post('/api/v1/supplier/shopifySession', async (req, res) => {
   try {
+    console.log(req.body)
     const result = await db.query(
-      'UPDATE public."Supplier" SET "shopifySession"=$2 WHERE id=$1 returning *',[
-      req.body.supplierID,
+      'UPDATE public."Supplier" SET "shopifySession"=$2 WHERE domain=$1 returning *',[
+      req.body.domain,
       req.body.shopifySession
     ])
     if (result.rowCount > 0) {
