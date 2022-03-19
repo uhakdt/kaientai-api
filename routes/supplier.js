@@ -55,17 +55,10 @@ router.get('/api/v1/supplier/:by/:identifier', async (req, res) => {
 // CHECK EXT SUPPLIER EXISTS
 router.get('/api/v1/supplier/checkExtExists/:platform/:extID', async (req, res) => {
   try {
-    console.log("////////////// - API START - //////////////")
-    console.log(req.params.extID)
-    console.log(req.params.platform)
     const result = await db.query(`SELECT * FROM public."Supplier" WHERE "extID"=$1 and platform=$2;`, [
       req.params.extID,
       req.params.platform
     ])
-    console.log("-----------------------")
-    console.log(result)
-    console.log("-----------------------")
-    console.log("////////////// - API END - //////////////")
     if (result.rowCount > 0) {
       res.status(200).json({
         status: "OK",
